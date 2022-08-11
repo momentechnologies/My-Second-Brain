@@ -1,0 +1,97 @@
+version: "3.7"
+
+volumes:
+  postgres:
+  mysecondbrain_api_nodemodules:
+  mysecondbrain_frontend_nodemodules:
+
+services:
+  pubsub:
+    image: bigtruedata/gcloud-pubsub-emulator
+    command: start --host-port 0.0.0.0:8538
+    ports:
+      - 8538:8538
+
+  postgres:
+    image: postgres:11-alpine
+    healthcheck:
+      test:
+        [
+          CMD,
+          psql,
+          -d,
+          "postgres://postgres:thepgpassword@localhost:5432",
+          -c,
+          "select 1",
+        ]
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./localSetup/projects/postgres/postgresinit.d:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: thepgpassword
+    ports:
+      - 5432:5432
+
+  proxy:
+    build: ./localSetup/projects/nginx
+    depends_on:
+      - mysecondbrain-api
+      - mysecondbrain-frontend
+    volumes:
+      - ./localSetup/projects/nginx/proxy.nginx.d:/etc/nginx/conf.d
+      - ./localSetup/projects/nginx/generate-certs.sh:/docker-entrypoint.d/generate-certs.sh:ro
+      - ./data/nginx/ca:/etc/ca
+      - ./data/nginx/certs:/etc/ssl/private
+    ports:
+      - "80:80"
+      - "443:443"
+
+  pubsub-init:
+    build:
+      context: localSetup/projects/pubsub-init
+      dockerfile: Dockerfile
+    environment:
+      PUBSUB_EMULATOR_HOST: pubsub:8538
+    depends_on:
+      - pubsub
+    ports:
+      - "1234:1234"
+    volumes:
+      - ./localSetup/projects/pubsub-init/setup.py:/app/setup.py
+
+  mysecondbrain-api:
+    command: "/bin/sh -c 'yarn install; yarn migrate; yarn start:dev'"
+    build:
+      context: ./sourcecode/api
+      dockerfile: Dockerfile
+      target: dev
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: development
+      PORT: 80
+      CONFIG_DB_HOST: postgres
+      CONFIG_DB_DATABASE: "mysecondbrain"
+      CONFIG_DB_USER: "root"
+      CONFIG_DB_PASSWORD: "thepgpassword"
+      PUBSUB_EMULATOR_HOST: pubsub:8538
+      CONFIG_APP_URL: https://mysecondbrain.test
+    volumes:
+      - ./sourcecode/api:/app
+      - mysecondbrain_api_nodemodules:/app/node_modules
+
+  mysecondbrain-frontend:
+    build:
+      context: ./sourcecode/frontend
+      dockerfile: Dockerfile
+      target: dev
+    environment:
+      PORT: "443"
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost]
+    volumes:
+      - mysecondbrain_frontend_nodemodules:/app/node_modules
+      - ./sourcecode/frontend/src:/app/src
+      - ./sourcecode/frontend/public:/app/public
+      - ./sourcecode/frontend/package.json:/app/package.json
+      - ./sourcecode/frontend/yarn.lock:/app/yarn.lock
