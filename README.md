@@ -1,2 +1,2 @@
-# My-Second-Brain
-Visit our website at mysecondbrain.ai
+# [My Second Brain](https://mysecondbrain.ai)
+
