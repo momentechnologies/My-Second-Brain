@@ -30,10 +30,11 @@ export const getError = (error, inputKey) => {
     return inputErrors.map((ie) => ie.message);
 };
 
-export default ({ inputKey, children, otherProps }) => {
+export default ({ inputKey, children, ...otherProps }) => {
     const { error } = React.useContext(managedFormContext);
     const inputErrors = getError(error, inputKey);
     const hasErrors = !!inputErrors;
+
     return (
         <FormControl error={hasErrors} {...otherProps}>
             {children(hasErrors)}

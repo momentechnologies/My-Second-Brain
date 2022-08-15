@@ -6,11 +6,12 @@ import Header from '../components/Header';
 import Home from './Home';
 import Signup from './Signup';
 import ConfirmEmail from './Auth/ConfirmEmail';
+import App from './App';
 
 export const authenticatedRoutes = [
     {
         path: '/app',
-        element: <Home />,
+        element: <App />,
     },
     {
         path: '/auth/confirm-email',
