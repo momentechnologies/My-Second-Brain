@@ -6,7 +6,7 @@ import { addCookieToRes } from './cookie';
 import { Response } from 'express';
 import { TokenUser } from '../types/TokenUser';
 
-export const encrypt = (payload: any, expireHours: number = 72, audience) =>
+export const encrypt = (payload: any, expireHours: number = 72, audience?) =>
     JsonWebToken.sign(
         {
             payload,

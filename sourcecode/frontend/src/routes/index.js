@@ -5,11 +5,16 @@ import AuthContext from '../contexts/auth';
 import Header from '../components/Header';
 import Home from './Home';
 import Signup from './Signup';
+import ConfirmEmail from './Auth/ConfirmEmail';
 
 export const authenticatedRoutes = [
     {
         path: '/app',
         element: <Home />,
+    },
+    {
+        path: '/auth/confirm-email',
+        element: <ConfirmEmail />,
     },
     {
         path: '*',
@@ -38,12 +43,7 @@ export const notAuthenticatedRoutes = [
 
 const AuthenticatedRoutes = () => {
     const routes = useRoutes(authenticatedRoutes);
-    return (
-        <>
-            <Header />
-            {routes}
-        </>
-    );
+    return <>{routes}</>;
 };
 
 const NotAuthenticatedRoutes = () => {

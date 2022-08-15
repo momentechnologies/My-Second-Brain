@@ -1,18 +1,23 @@
 import gql from 'graphql-tag';
-import bcrypt from 'bcrypt';
 import { Context } from '../../context';
 import NotFoundException from '../../exceptions/notFound';
 import validateJoi from '../../services/validateJoi';
 import Joi from 'joi';
-import ClientException from '../../exceptions/client';
 import * as TokenService from '../../services/token';
+import * as AuthService from '../../services/auth';
+import { clearCookie } from '../../services/cookie';
+import { hashPassword } from '../../services/auth';
 
-const hashPassword = (password) => bcrypt.hashSync(password, 10);
-console.log(hashPassword('123456789'));
 export const schema = gql`
     type Mutation {
         login(email: String!, password: String!): User
+        signup(email: String!, password: String!): User
+        confirmEmail(token: String!): Boolean
         logout: Boolean
+        newPasswordRequest(email: String!): Boolean
+        newConfirmEmail: Boolean @auth
+        resetPassword(token: String!, newPassword: String!): Boolean
+        changePassword(password: String!): Boolean @auth
     }
 
     type Query {
@@ -44,25 +49,91 @@ export const resolvers = {
                 })
             );
 
-            const user = await context.db().user.getByEmail.load(email);
-
-            if (!user) {
-                throw new ClientException(
-                    'Wrong email or password.',
-                    'wrong_credentials'
-                );
-            }
-
-            if (!bcrypt.compareSync(password, user.password)) {
-                throw new ClientException(
-                    'Wrong email or password.',
-                    'wrong_credentials'
-                );
-            }
+            const user = await AuthService.login(context, email, password);
 
             await TokenService.addJwtToResponse(context.res, user);
 
             return user;
+        },
+        signup: async (root, args, context) => {
+            const { email, password } = validateJoi(
+                args,
+                Joi.object().keys({
+                    email: Joi.string().email().required(),
+                    password: passwordValidation,
+                })
+            );
+
+            const user = await AuthService.signup(
+                context,
+                email.toLowerCase(),
+                password
+            );
+
+            await TokenService.addJwtToResponse(context.res, user);
+
+            return user;
+        },
+        confirmEmail: async (root, { token }, context) => {
+            await AuthService.confirmEmail(context, token);
+
+            return true;
+        },
+        logout: async (root, {}, context: Context) => {
+            clearCookie(context.res, 'jwt');
+
+            return true;
+        },
+        resetPassword: async (root, args, context: Context) => {
+            const { token, newPassword } = validateJoi(
+                args,
+                Joi.object().keys({
+                    token: Joi.string().min(10).required(),
+                    newPassword: passwordValidation,
+                })
+            );
+
+            const user = await AuthService.resetPassword(
+                context,
+                token,
+                newPassword
+            );
+
+            await TokenService.addJwtToResponse(context.res, user);
+
+            return true;
+        },
+        newPasswordRequest: async (root, args, context: Context) => {
+            const { email } = validateJoi(
+                args,
+                Joi.object().keys({
+                    email: Joi.string().email().required(),
+                })
+            );
+
+            return await AuthService.newPasswordRequest(
+                context,
+                email.toLowerCase()
+            );
+        },
+        newConfirmEmail: async (root, args, context: Context) => {
+            return await AuthService.newConfirmEmail(context, context.user.id);
+        },
+        changePassword: async (root, args, context: Context) => {
+            const { password } = validateJoi(
+                args,
+                Joi.object().keys({
+                    password: passwordValidation,
+                })
+            );
+
+            await context.db().user.updateById(context.user.id, {
+                password: hashPassword(password),
+            });
+
+            clearCookie(context.res, 'jwt');
+
+            return true;
         },
     },
     Query: {

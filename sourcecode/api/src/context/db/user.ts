@@ -4,10 +4,11 @@ import { repositoryHelpers } from '../../services/db';
 const tableName = 'users';
 
 type User = {
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     password: string;
     email: string;
+    emailConfirmed: boolean;
 };
 
 export default (db) => {

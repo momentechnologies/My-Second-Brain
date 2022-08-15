@@ -72,7 +72,7 @@ services:
       PORT: 80
       CONFIG_DB_HOST: postgres
       CONFIG_DB_DATABASE: "mysecondbrain"
-      CONFIG_DB_USER: "root"
+      CONFIG_DB_USER: "postgres"
       CONFIG_DB_PASSWORD: "thepgpassword"
       PUBSUB_EMULATOR_HOST: pubsub:8538
       CONFIG_APP_URL: https://mysecondbrain.test

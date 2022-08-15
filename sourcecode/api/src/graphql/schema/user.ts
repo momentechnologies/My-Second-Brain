@@ -10,8 +10,8 @@ export const schema = gql`
     type User {
         id: ID!
         email: String!
-        firstName: String!
-        lastName: String!
+        firstName: String
+        lastName: String
         apiKeys: [UserApiKey!]!
     }
 `;

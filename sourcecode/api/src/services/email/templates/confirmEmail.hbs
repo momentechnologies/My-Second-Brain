@@ -1,0 +1,32 @@
+{{#> defaultEmail}}
+    {{#*inline "content-block"}}
+        <div style="margin-bottom: 10px">
+            For å kunne bruke kontoen din må du bekrefte e-posten din ved å trykke på knappen under:
+        </div>
+        <div
+                style="margin-bottom: 10px"
+        >
+            <a
+                    href="{{url}}/confirm-email?token={{token}}"
+            target="_blank"
+            class="button"
+            >
+            <span>Bekreft e-post</span>
+            </a>
+        </div>
+        <div style="margin-bottom: 10px">
+            Hvis det ikke funker kan du kopiere linken under inn i nettleseren din:
+        </div>
+        <div>
+            <a
+                href="{{url}}/confirm-email?token={{token}}"
+                class="link"
+            >
+            {{url}}/confirm-email?token={{token}}
+            </a>
+        </div>
+    {{/inline}}
+    {{#*inline "email-reason-block"}}
+        Du får denne epost fordi du lagde nettopp ny konto.
+    {{/inline}}
+{{/defaultEmail}}

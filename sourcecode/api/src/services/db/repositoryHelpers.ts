@@ -24,9 +24,9 @@ export const getById = <T>(tableName: string, db: Knex) =>
 export const create =
     <T, RT>(tableName: string, db: Knex) =>
     async (data: T) => {
-        const rows = await db(tableName).insert(data);
+        const rows = await db(tableName).insert(data).returning('*');
 
-        return getById<RT>(tableName, db).load(rows[0]);
+        return rows[0];
     };
 
 export const updateById =

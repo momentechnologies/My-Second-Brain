@@ -1,0 +1,81 @@
+<!doctype html>
+
+<html lang="nb">
+<head>
+    <meta charset="utf-8">
+    <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap"
+            rel="stylesheet"
+    />
+    <style type="text/css">
+        body {
+            font: 14px 'Montserrat', sans-serif;
+            font-weight: 500;
+        }
+
+        .layout-table {
+            padding: 0;
+            width: 600px;
+            background-color: #fafafa;
+            margin: auto;
+            border: 1px solid #eeeeee;
+            border-collapse: collapse;
+        }
+
+        .button {
+            text-transform: none;
+        }
+
+        .button > span {
+            display: inline-block;
+            background-color: #3271ed;
+            color: white;
+            font-size: 13px;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 3px;
+            line-height: 16px;
+            text-transform: uppercase;
+        }
+
+        .link {
+            color: #3775ea;
+            text-decoration: none;
+            word-break: break-all;
+        }
+    </style>
+    {{#> header-block}}
+    {{/header-block}}
+</head>
+<body>
+<div style="padding:10px;color:#424242">
+    <table class="layout-table">
+        <tr>
+            <td
+                    style="padding:10px;background-color:#0277bd;border-bottom:1px solid #e7e7e7"
+            >
+                <div style="font-size:20px;font-weight: bold;text-align: center;">
+                    <img
+                            src="https://www.dronehandelen.no/logo.png"
+                            alt=""
+                            style="max-height: 60px;"
+                    />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:20px">
+                {{#> content-block}}
+                {{/content-block}}
+            </td>
+        </tr>
+    </table>
+    <div style="width:600px;margin:10px auto;text-align:center;font-size:10px">
+        {{#> email-reason-block}}
+        {{/email-reason-block}}
+    </div>
+</div>
+</body>
+</html>
+
+
