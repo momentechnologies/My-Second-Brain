@@ -19,6 +19,11 @@ const Theme = ({ children }) => {
                     variant: 'contained',
                 },
             },
+            MuiLoadingButton: {
+                defaultProps: {
+                    variant: 'contained',
+                },
+            },
         },
     });
 

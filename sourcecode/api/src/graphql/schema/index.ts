@@ -2,14 +2,13 @@ import _ from 'lodash';
 import * as SchemaTools from '@graphql-tools/schema';
 import { mergeTypeDefs } from '@graphql-tools/merge';
 
-import * as auth from './auth';
 import directives from './directives';
+
+import * as auth from './auth';
 import * as externalTypes from './externalTypes';
+import * as project from './project';
+import * as task from './task';
 import * as user from './user';
-import * as apiKey from './apiKey';
-import * as poleGprScan from './poleGprScan';
-import * as pole from './pole';
-import * as poleBvMillScan from './poleBvMillScan';
 
 const get = (directiveTypes, services) => ({
     typeDefs: mergeTypeDefs([
@@ -27,14 +26,6 @@ const get = (directiveTypes, services) => ({
 
 export default directives.decorate(
     SchemaTools.makeExecutableSchema(
-        get(directives.types, [
-            auth,
-            externalTypes,
-            user,
-            apiKey,
-            pole,
-            poleGprScan,
-            poleBvMillScan,
-        ])
+        get(directives.types, [auth, externalTypes, project, task, user])
     )
 );

@@ -10,7 +10,7 @@ import App from './App';
 
 export const authenticatedRoutes = [
     {
-        path: '/app',
+        path: '/app/*',
         element: <App />,
     },
     {

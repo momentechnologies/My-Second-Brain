@@ -12,7 +12,6 @@ export const schema = gql`
         email: String!
         firstName: String
         lastName: String
-        apiKeys: [UserApiKey!]!
     }
 `;
 
