@@ -18,7 +18,7 @@ import DefaultHookQuery from '../../../components/DefaultHookQuery';
 
 const Projects = ({ queryHookData, onCreateNew, onUpdate }) => {
     return (
-        <Container maxWidth={false}>
+        <Container>
             <Grid container>
                 <Grid item xs={12}>
                     <Paper component={Box} p={2} mt={2}>
@@ -55,6 +55,7 @@ const Projects = ({ queryHookData, onCreateNew, onUpdate }) => {
                                                     (project) => (
                                                         <TableRow
                                                             key={project.id}
+                                                            hover
                                                         >
                                                             <TableCell>
                                                                 {project.name}
