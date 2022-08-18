@@ -1,0 +1,35 @@
+steps:
+  # Build the API image
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "--target", "prod", "-t", "${_API_IMAGE}", "./sourcecode/api"]
+
+  # Build the Frontend image
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "--target", "prod", "-t", "${_FRONTEND_IMAGE}", "./sourcecode/frontend"]
+
+  # Push the API image to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "${_API_IMAGE}"]
+
+  # Push the Frontend image to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "${_FRONTEND_IMAGE}"]
+
+images:
+  - gcr.io/$PROJECT_ID/mysecondbrain-api:$COMMIT_SHA
+
+substitutions:
+  _API_IMAGE: gcr.io/${PROJECT_ID}/mysecondbrain-api:${COMMIT_SHA}
+  _FRONTEND_IMAGE: gcr.io/${PROJECT_ID}/mysecondbrain-frontend:${COMMIT_SHA}
+
+  _SERVICE_ID: serviceid
+  _GCP_REGION: europe-west1
+  _CONFIG_DB_DATABASE: database
+  _CONFIG_DB_USER: user
+  _CONFIG_DB_PASSWORD: password
+  _CONFIG_DB_SOCKET_PATH: socket/path
+  _INSTANCE_CONNECTION_NAME: connection_name
+
+options:
+  dynamic_substitutions: true
+  logging: CLOUD_LOGGING_ONLY

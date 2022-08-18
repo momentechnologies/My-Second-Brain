@@ -1,0 +1,4 @@
+apiVersion: v2
+name: My Second Brain
+description: The Helm setup for My Second Brain
+version: "1.0.0"
