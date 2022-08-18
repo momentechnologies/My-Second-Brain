@@ -12,7 +12,7 @@ export const schema = gql`
 
     type Mutation {
         createProject(data: CreateProjectInput!): Project @auth
-        updateProject(id: ID!, data: UpdateProjectInput!): Project @auth
+        updateProject(id: Int!, data: UpdateProjectInput!): Project @auth
     }
 
     input CreateProjectInput {
@@ -28,7 +28,7 @@ export const schema = gql`
     }
 
     type Project {
-        id: ID!
+        id: Int!
         name: String!
         status: String!
         isArchived: Boolean!

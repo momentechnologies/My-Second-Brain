@@ -8,7 +8,7 @@ export const schema = gql`
     }
 
     type User {
-        id: ID!
+        id: Int!
         email: String!
         firstName: String
         lastName: String

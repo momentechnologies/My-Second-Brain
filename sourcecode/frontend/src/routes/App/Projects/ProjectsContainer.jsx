@@ -23,7 +23,7 @@ const CREATE_PROJECT = gql`
 `;
 
 const UPDATE_PROJECT = gql`
-    mutation UpdateProject($id: ID!, $data: UpdateProjectInput!) {
+    mutation UpdateProject($id: Int!, $data: UpdateProjectInput!) {
         updateProject(id: $id, data: $data) {
             id
         }
