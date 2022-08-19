@@ -1,7 +1,7 @@
 apiVersion: networking.gke.io/v1
-  kind: ManagedCertificate
-  metadata:
-    name: root-mysecondbrain
-  spec:
-    domains:
-      - {{ .Values.baseHost }}
+kind: ManagedCertificate
+metadata:
+  name: root-mysecondbrain
+spec:
+  domains:
+    - {{ .Values.baseHost }}
