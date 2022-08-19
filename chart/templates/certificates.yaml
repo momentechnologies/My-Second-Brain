@@ -1,7 +1,22 @@
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: root-mysecondbrain
+  name: mysecondbrain
 spec:
   domains:
     - {{ .Values.baseHost }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: managed-cert-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: my-second-brain-gke-586d27a
+    networking.gke.io/managed-certificates: mysecondbrain
+    kubernetes.io/ingress.class: "gce"
+spec:
+  defaultBackend:
+    service:
+      name: mc-service
+      port:
+        number: 80
