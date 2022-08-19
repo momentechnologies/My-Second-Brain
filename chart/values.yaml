@@ -1,2 +1,4 @@
 environment: "production"
 baseHost: "mysecondbrain.dev"
+ingress:
+  ipName: my-second-brain-gke-586d27a
