@@ -23,7 +23,7 @@ steps:
       - KUBECONFIG=/workspace/.kube/config
 
   # Deploy with Helm
-  - name: gcr.io/$PROJECT_ID/helm
+  - name: gcr.io/my-second-brain-common/helm
     args:
       - upgrade
       - -i
