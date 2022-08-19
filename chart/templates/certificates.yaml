@@ -6,6 +6,19 @@ spec:
   domains:
     - {{ .Values.baseHost }}
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mc-service
+spec:
+  selector:
+    app: mc-service
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
