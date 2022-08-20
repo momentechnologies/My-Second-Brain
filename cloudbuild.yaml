@@ -15,28 +15,51 @@ steps:
 #  - name: "gcr.io/cloud-builders/docker"
 #    args: ["push", "${_FRONTEND_IMAGE}"]
   - name: gcr.io/cloud-builders/kubectl
+    entrypoint: /bin/bash
     args:
-      - cluster-info
+      - -n
+      - $_HELM_NAMESPACE
+      - get
+      - configmap
+      - $_HELM_CONFIG_NAME
+      - -o
+      - jsonpath="{.data.values}"
+      - ">"
+      - /data/values.yaml
     env:
       - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
       - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
       - KUBECONFIG=/workspace/.kube/config
 
-  # Deploy with Helm
-  - name: gcr.io/my-second-brain-common/helm
+  - name: busybox
     args:
-      - upgrade
-      - -i
-      - mysecondbrain
-      - ./chart
-      - --create-namespace
-      - -n
-      - web
-      - -f
-      - ./chart/values.yaml
-    env:
-      - KUBECONFIG=/workspace/.kube/config
-      - TILLER_NAMESPACE=kube-system
+      - "ls"
+      - "-l"
+      - "/data"
+
+#  - name: gcr.io/cloud-builders/kubectl
+#    args:
+#      - cluster-info
+#    env:
+#      - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
+#      - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
+#      - KUBECONFIG=/workspace/.kube/config
+#
+#  # Deploy with Helm
+#  - name: gcr.io/my-second-brain-common/helm
+#    args:
+#      - upgrade
+#      - -i
+#      - mysecondbrain
+#      - ./chart
+#      - --create-namespace
+#      - -n
+#      - web
+#      - -f
+#      - ./chart/values.yaml
+#    env:
+#      - KUBECONFIG=/workspace/.kube/config
+#      - TILLER_NAMESPACE=kube-system
 
 images:
   - gcr.io/$PROJECT_ID/mysecondbrain-api:$COMMIT_SHA
@@ -47,6 +70,9 @@ substitutions:
 
   _GCP_REGION: europe-west1
   _GKE_CLUSTER: main-cluster-v1-7d182ac
+
+  _HELM_CONFIG_NAME: the-name-of-the-helm-configmap
+  _HELM_NAMESPACE: the-name-of-the-helm-namespace
 
 # Must be sorted
   _SERVICE_ID: serviceid
