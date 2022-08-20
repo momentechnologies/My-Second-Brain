@@ -18,7 +18,7 @@ steps:
     entrypoint: "/bin/bash"
     args:
       - -c
-      - /builder/kubectl.bash -n web get configmap/$_HELM_CONFIG_NAME -o jsonpath="{.data.values}" > /values.yaml
+      - /builder/kubectl.bash -n web get configmap/$_HELM_CONFIG_NAME -o jsonpath="{.data.values}" > /workspace/values.yaml
     env:
       - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
       - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
@@ -27,7 +27,7 @@ steps:
   - name: busybox
     args:
       - "cat"
-      - "/values.yaml"
+      - "/workspace/values.yaml"
 
 #  - name: gcr.io/cloud-builders/kubectl
 #    args:
