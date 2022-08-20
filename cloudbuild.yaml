@@ -15,7 +15,6 @@ steps:
 #  - name: "gcr.io/cloud-builders/docker"
 #    args: ["push", "${_FRONTEND_IMAGE}"]
   - name: gcr.io/cloud-builders/kubectl
-    entrypoint: /bin/bash
     args:
       - -n
       - $_HELM_NAMESPACE
@@ -36,6 +35,11 @@ steps:
       - "ls"
       - "-l"
       - "/data"
+
+  - name: busybox
+    args:
+      - "cat"
+      - "/data/values.yaml"
 
 #  - name: gcr.io/cloud-builders/kubectl
 #    args:
