@@ -24,55 +24,42 @@ steps:
       - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
       - KUBECONFIG=/workspace/.kube/config
 
-  - name: busybox
+  - name: gcr.io/cloud-builders/kubectl
     args:
-      - "cat"
-      - "/workspace/values.yaml"
+      - cluster-info
+    env:
+      - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
+      - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
+      - KUBECONFIG=/workspace/.kube/config
 
-#  - name: gcr.io/cloud-builders/kubectl
-#    args:
-#      - cluster-info
-#    env:
-#      - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
-#      - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
-#      - KUBECONFIG=/workspace/.kube/config
-#
-#  # Deploy with Helm
-#  - name: gcr.io/my-second-brain-common/helm
-#    args:
-#      - upgrade
-#      - -i
-#      - mysecondbrain
-#      - ./chart
-#      - --create-namespace
-#      - -n
-#      - web
-#      - -f
-#      - ./chart/values.yaml
-#    env:
-#      - KUBECONFIG=/workspace/.kube/config
-#      - TILLER_NAMESPACE=kube-system
+  # Deploy with Helm
+  - name: gcr.io/my-second-brain-common/helm
+    args:
+      - upgrade
+      - -i
+      - mysecondbrain
+      - ./chart
+      - --create-namespace
+      - -n
+      - web
+      - -f
+      - /workspace/values.yaml
+    env:
+      - KUBECONFIG=/workspace/.kube/config
+      - TILLER_NAMESPACE=kube-system
 
-images:
-  - gcr.io/$PROJECT_ID/mysecondbrain-api:$COMMIT_SHA
+#images:
+#  - gcr.io/$PROJECT_ID/mysecondbrain-api:$COMMIT_SHA
 
 substitutions:
   _API_IMAGE: gcr.io/${PROJECT_ID}/mysecondbrain-api:${COMMIT_SHA}
   _FRONTEND_IMAGE: gcr.io/${PROJECT_ID}/mysecondbrain-frontend:${COMMIT_SHA}
 
-  _GCP_REGION: europe-west1
-  _GKE_CLUSTER: main-cluster-v1-7d182ac
+  _GCP_REGION: the-region
+  _GKE_CLUSTER: name-of-gke-cluster
 
   _HELM_CONFIG_NAME: the-name-of-the-helm-configmap
   _HELM_NAMESPACE: the-name-of-the-helm-namespace
-
-# Must be sorted
-  _SERVICE_ID: serviceid
-  _CONFIG_DB_DATABASE: database
-  _CONFIG_DB_USER: user
-  _CONFIG_DB_PASSWORD: password
-  _CONFIG_DB_SOCKET_PATH: socket/path
-  _INSTANCE_CONNECTION_NAME: connection_name
 
 options:
   dynamic_substitutions: true

@@ -1,4 +1,4 @@
 environment: "production"
-baseHost: "mysecondbrain.dev"
+baseHost: "Url of the base HOST for the website. For example mysecondbrain.ai"
 ingress:
-  ipName: my-second-brain-gke-586d27a
+  ipName: "Name of IP resource in GCP"
