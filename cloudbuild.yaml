@@ -15,36 +15,6 @@ steps:
 #  - name: "gcr.io/cloud-builders/docker"
 #    args: ["push", "${_FRONTEND_IMAGE}"]
 
-  # Add cloud proxy to container in order to be able to run migrations
-  - id: "docker-layer"
-    name: "gcr.io/cloud-builders/docker"
-    entrypoint: /bin/bash
-    args:
-      - '-c'
-      - |
-        echo "FROM $_IMAGE_NAME_WITH_COMMIT
-        COPY --from=gcr.io/cloudsql-docker/gce-proxy /cloud_sql_proxy /cloudsql/cloud_sql_proxy" > Dockerfile-proxy;
-
-        docker build -f Dockerfile-proxy -t migration-proxy .
-
-
-  # Run the database migration
-  # For Unix Socket connections
-  - id: "migrate-socket"
-    name: "migration-proxy"
-    dir: /app
-    env:
-      - "CONFIG_DB_DATABASE=${_CONFIG_DB_DATABASE}"
-      - "CONFIG_DB_USER=${_CONFIG_DB_USER}"
-      - "CONFIG_DB_PASSWORD=${_CONFIG_DB_PASSWORD}"
-      - "CONFIG_DB_SOCKET_PATH=${_CONFIG_DB_SOCKET_PATH}"
-    entrypoint: /bin/bash
-    args:
-      - '-c'
-      - |
-        /cloudsql/cloud_sql_proxy -instances=${_INSTANCE_CONNECTION_NAME} -dir=/cloudsql & sleep 2;
-        yarn migrate
-
   - name: gcr.io/cloud-builders/kubectl
     entrypoint: "/bin/bash"
     args:
