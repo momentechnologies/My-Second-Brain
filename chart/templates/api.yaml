@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "api-config"
+data:
+  NODE_ENV: production
+  PORT: 80
+  CONFIG_DB_HOST: localhost
+  CONFIG_DB_DATABASE: "{{ .Values.api.database.databaseName }}"
+  CONFIG_DB_USER: "{{ .Values.api.database.user }}"
+  CONFIG_APP_URL: https://mysecondbrain.test
+
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: api-startup
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: startup
+          image: "{{ .Values.api.image }}"
+          command: "yarn migrate"
+          envFrom:
+            - configMapRef:
+                name: api-config
+
+        - name: cloud-sql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.28.0
+          command:
+            - "/cloud_sql_proxy"
+            - "-enable_iam_login"
+            - "-instances={{ .Values.api.database.connectionName }}=tcp:5432"
+          securityContext:
+            runAsNonRoot: true
