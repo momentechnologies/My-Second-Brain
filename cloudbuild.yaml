@@ -24,10 +24,10 @@ steps:
 
   - name: gcr.io/cloud-builders/kubectl
     args:
-      - -n
-      - $_HELM_NAMESPACE
       - get
       - configmap/$_HELM_CONFIG_NAME
+      - -n
+      - $_HELM_NAMESPACE
       - -o
       - jsonpath="{.data.values}"
       - ">"
