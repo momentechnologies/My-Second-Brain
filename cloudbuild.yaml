@@ -16,13 +16,14 @@ steps:
 #    args: ["push", "${_FRONTEND_IMAGE}"]
   - name: gcr.io/cloud-builders/kubectl
     args:
+      - get
       - configmap/$_HELM_CONFIG_NAME
       - -n
       - $_HELM_NAMESPACE
       - -o
       - jsonpath="{.data.values}"
-      - ">"
-      - /data/values.yaml
+#      - ">"
+#      - /data/values.yaml
     env:
       - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
       - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
