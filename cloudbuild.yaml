@@ -19,8 +19,7 @@ steps:
       - -n
       - $_HELM_NAMESPACE
       - get
-      - configmap
-      - $_HELM_CONFIG_NAME
+      - configmap/$_HELM_CONFIG_NAME
       - -o
       - jsonpath="{.data.values}"
       - ">"
