@@ -45,7 +45,8 @@ steps:
       - web
       - -f
       - /workspace/values.yaml
-      - --set api.image=$_API_IMAGE
+      - --set
+      - api.image=$_API_IMAGE
     env:
       - KUBECONFIG=/workspace/.kube/config
       - TILLER_NAMESPACE=kube-system
