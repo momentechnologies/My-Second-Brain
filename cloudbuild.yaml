@@ -18,7 +18,7 @@ steps:
     entrypoint: "/bin/bash"
     args:
       - -c
-      - kubectl -n web get configmap/$_HELM_CONFIG_NAME -o jsonpath="{.data.values}" > /values.yaml
+      - /builder/kubectl.bash -n web get configmap/$_HELM_CONFIG_NAME -o jsonpath="{.data.values}" > /values.yaml
     env:
       - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
       - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
