@@ -25,7 +25,9 @@ spec:
       containers:
         - name: startup
           image: "{{ .Values.api.image }}"
-          command: "yarn migrate"
+          command:
+            - yarn
+            - migrate
           envFrom:
             - configMapRef:
                 name: api-config
