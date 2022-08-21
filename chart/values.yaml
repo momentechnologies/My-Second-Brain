@@ -2,3 +2,10 @@ environment: "production"
 baseHost: "Url of the base HOST for the website. For example mysecondbrain.ai"
 ingress:
   ipName: "Name of IP resource in GCP"
+api:
+  image: "Image for the api"
+  serviceAccountName: "the name of the service account for the API. Can be left blank as well"
+  database:
+    connectionName: "gcp connection name to the database"
+    databaseName: "name of database"
+    user: "user for the database"

@@ -21,6 +21,9 @@ metadata:
 spec:
   template:
     spec:
+{{ if .Values.api.serviceAccountName }}
+      serviceAccountName: .Values.api.serviceAccountName
+{{ end }}
       restartPolicy: Never
       containers:
         - name: startup
