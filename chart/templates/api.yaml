@@ -12,18 +12,6 @@
   value: {{ $v | quote }}
 {{- end }}
 {{- end }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "api-config"
-data:
-  NODE_ENV: production
-  PORT: 80
-  CONFIG_DB_HOST: localhost
-  CONFIG_DB_DATABASE: "{{ .Values.api.database.databaseName }}"
-  CONFIG_DB_USER: "{{ .Values.api.database.user }}"
-  CONFIG_APP_URL: https://mysecondbrain.test
-
 ---
 kind: Job
 apiVersion: batch/v1
