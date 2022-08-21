@@ -8,8 +8,10 @@
   },
   "scripts": {
     "start:dev": "ts-node-dev --respawn --transpile-only src/api.ts",
-    "build": "rm -rf dist && tsc",
-    "migrate": "yarn build && node dist/runMigrations.js",
+    "build": "rm -rf dist && tsc && yarn copy-non-ts-files",
+    "copy-non-ts-files": "copyfiles -u 1 src/**/*.hbs dist/",
+    "migrate": "yarn build && yarn migrate:prod",
+    "migrate:prod": "node dist/runMigrations.js",
     "knex:migration:create": "knex migrate:make --migrations-directory src/migrations"
   },
   "dependencies": {
@@ -24,6 +26,7 @@
     "body-parser": "^1.20.0",
     "chalk": "^4.1.2",
     "cookie-parser": "^1.4.6",
+    "copyfiles": "^2.4.1",
     "dataloader": "^2.1.0",
     "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",

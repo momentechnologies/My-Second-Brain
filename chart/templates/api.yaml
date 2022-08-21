@@ -5,7 +5,11 @@
 {{- $_ := set $apiEnvConfig "CONFIG_DB_HOST" "localhost" -}}
 {{- $_ := set $apiEnvConfig "CONFIG_DB_DATABASE" .Global.Values.api.database.databaseName -}}
 {{- $_ := set $apiEnvConfig "CONFIG_DB_USER" .Global.Values.api.database.user -}}
-{{- $_ := set $apiEnvConfig "CONFIG_APP_URL" "https://mysecondbrain.test" -}}
+{{- $_ := set $apiEnvConfig "CONFIG_DB_PASSWORD" .Global.Values.api.database.password -}}
+{{- $_ := set $apiEnvConfig "CONFIG_APP_URL" "https://{{ .Global.Values.baseHost }}" -}}
+{{- $_ := set $apiEnvConfig "CONFIG_IMAGE_STORAGE" "bucket" -}}
+{{- $_ := set $apiEnvConfig "CONFIG_JWT_SECRET" .Global.Values.api.jwtSecret -}}
+{{- $_ := set $apiEnvConfig "PORT" "80" -}}
 
 {{- range $k, $v := $apiEnvConfig }}
 - name: {{ $k | quote }}
@@ -31,16 +35,127 @@ spec:
         - name: startup
           image: "{{ .Values.api.image }}"
           command:
-            - yarn
-            - migrate
+            - /bin/bash
+            - -c
+          args:
+            - |
+              trap "touch /lifecycle/main-terminated" EXIT
+              yarn migrate:prod
+          volumeMounts:
+            - name: lifecycle
+              mountPath: /lifecycle
           env:
 {{- include "api.envBlock" ( dict "Global" . ) | indent 12 }}
 
         - name: cloud-sql-proxy
-          image: gcr.io/cloudsql-docker/gce-proxy:1.28.0
+          image: gcr.io/cloudsql-docker/gce-proxy:1.31.2-alpine
           command:
-            - "/cloud_sql_proxy"
-            - "-enable_iam_login"
-            - "-instances={{ .Values.api.database.connectionName }}=tcp:5432"
+            - /bin/sh
+            - -c
+          args:
+            - |
+              /cloud_sql_proxy -enable_iam_login -instances={{ .Values.api.database.connectionName }}=tcp:5432 &
+              PID=$!
+              while true
+                  do
+                      if [[ -f "/lifecycle/main-terminated" ]] 
+                      then
+                          kill $PID
+                          exit 0
+                      fi
+                      sleep 1
+                  done
           securityContext:
             runAsNonRoot: true
+          volumeMounts:
+            - name: lifecycle
+              mountPath: /lifecycle
+      volumes:
+        - name: lifecycle
+          emptyDir:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app: api
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - api
+                topologyKey: 'kubernetes.io/hostname'
+      containers:
+        - name: startup
+          image: "{{ .Values.api.image }}"
+          command:
+            - /bin/bash
+            - -c
+          args:
+            - |
+              trap "touch /lifecycle/main-terminated" EXIT
+              node dist/api.js
+          volumeMounts:
+            - name: lifecycle
+              mountPath: /lifecycle
+          env:
+  {{- include "api.envBlock" ( dict "Global" . ) | indent 12 }}
+        - name: cloud-sql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.31.2-alpine
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              /cloud_sql_proxy -enable_iam_login -instances={{ .Values.api.database.connectionName }}=tcp:5432 &
+              PID=$!
+              while true
+                  do
+                      if [[ -f "/lifecycle/main-terminated" ]] 
+                      then
+                          kill $PID
+                          exit 0
+                      fi
+                      sleep 1
+                  done
+          securityContext:
+            runAsNonRoot: true
+          volumeMounts:
+            - name: lifecycle
+              mountPath: /lifecycle
+      volumes:
+        - name: lifecycle
+          emptyDir:
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: api
+spec:
+  selector:
+    app: api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

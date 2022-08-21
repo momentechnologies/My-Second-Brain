@@ -9,5 +9,5 @@
         "typeRoots": ["./node_modules/@types"],
         "allowJs": true
     },
-    "lib": ["es2015"]
+    "lib": ["es2015"],
 }
