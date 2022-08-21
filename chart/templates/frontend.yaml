@@ -1,0 +1,60 @@
+{{- define "frontend.envBlock" }}
+{{- $frontendEnvConfig := dict -}}
+{{- $_ := set $frontendEnvConfig "REACT_APP_API_URL" "https://api.{{.Global.Values.baseHost}}" -}}
+{{- $_ := set $frontendEnvConfig "PORT" 80 -}}
+
+{{- range $k, $v := $frontendEnvConfig }}
+- name: {{ $k | quote }}
+  value: {{ $v | quote }}
+{{- end }}
+{{- end }}
+---
+frontendVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - frontend
+                topologyKey: 'kubernetes.io/hostname'
+      containers:
+        - name: startup
+          image: "{{ .Values.frontend.image }}"
+          env:
+{{- include "frontend.envBlock" ( dict "Global" . ) | indent 12 }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

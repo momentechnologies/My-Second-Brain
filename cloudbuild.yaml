@@ -3,17 +3,17 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "--target", "prod", "-t", "${_API_IMAGE}", "./sourcecode/api"]
 
-#  # Build the Frontend image
-#  - name: "gcr.io/cloud-builders/docker"
-#    args: ["build", "--target", "prod", "-t", "${_FRONTEND_IMAGE}", "./sourcecode/frontend"]
+  # Build the Frontend image
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "--target", "prod", "-t", "${_FRONTEND_IMAGE}", "./sourcecode/frontend"]
 
   # Push the API image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_API_IMAGE}"]
 
-#  # Push the Frontend image to Container Registry
-#  - name: "gcr.io/cloud-builders/docker"
-#    args: ["push", "${_FRONTEND_IMAGE}"]
+  # Push the Frontend image to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "${_FRONTEND_IMAGE}"]
 
   - name: gcr.io/cloud-builders/kubectl
     entrypoint: "/bin/bash"
@@ -47,12 +47,15 @@ steps:
       - /workspace/values.yaml
       - --set
       - api.image=$_API_IMAGE
+      - --set
+      - frontend.image=$_FRONTEND_IMAGE
     env:
       - KUBECONFIG=/workspace/.kube/config
       - TILLER_NAMESPACE=kube-system
 
-#images:
-#  - gcr.io/$PROJECT_ID/mysecondbrain-api:$COMMIT_SHA
+images:
+  - gcr.io/$PROJECT_ID/mysecondbrain-api:$COMMIT_SHA
+  - gcr.io/$PROJECT_ID/mysecondbrain-frontend:$COMMIT_SHA
 
 substitutions:
   _API_IMAGE: gcr.io/${PROJECT_ID}/mysecondbrain-api:${COMMIT_SHA}
