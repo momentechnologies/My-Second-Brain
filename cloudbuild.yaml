@@ -77,3 +77,5 @@ substitutions:
 options:
   dynamic_substitutions: true
   logging: CLOUD_LOGGING_ONLY
+
+timeout: 1200s
