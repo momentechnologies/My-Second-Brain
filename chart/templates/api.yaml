@@ -6,7 +6,7 @@
 {{- $_ := set $apiEnvConfig "CONFIG_DB_DATABASE" .Global.Values.api.database.databaseName -}}
 {{- $_ := set $apiEnvConfig "CONFIG_DB_USER" .Global.Values.api.database.user -}}
 {{- $_ := set $apiEnvConfig "CONFIG_DB_PASSWORD" .Global.Values.api.database.password -}}
-{{- $_ := set $apiEnvConfig "CONFIG_APP_URL" "https://{{ .Global.Values.baseHost }}" -}}
+{{- $_ := set $apiEnvConfig "CONFIG_APP_URL" ( printf "https://%s" .Global.Values.baseHost ) -}}
 {{- $_ := set $apiEnvConfig "CONFIG_IMAGE_STORAGE" "bucket" -}}
 {{- $_ := set $apiEnvConfig "CONFIG_JWT_SECRET" .Global.Values.api.jwtSecret -}}
 {{- $_ := set $apiEnvConfig "PORT" "80" -}}

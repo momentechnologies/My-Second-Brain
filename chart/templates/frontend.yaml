@@ -1,6 +1,6 @@
 {{- define "frontend.envBlock" }}
 {{- $frontendEnvConfig := dict -}}
-{{- $_ := set $frontendEnvConfig "REACT_APP_API_URL" "https://api.{{.Global.Values.baseHost}}" -}}
+{{- $_ := set $frontendEnvConfig "REACT_APP_API_URL" ( printf "https://api.%s" .Global.Values.baseHost ) -}}
 {{- $_ := set $frontendEnvConfig "PORT" 80 -}}
 
 {{- range $k, $v := $frontendEnvConfig }}

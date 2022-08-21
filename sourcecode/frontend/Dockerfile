@@ -17,6 +17,7 @@ COPY --from=build /app/build /usr/share/nginx/html
 COPY ./docker/nginx.conf /etc/nginx/templates/default.conf.template
 COPY ./docker/entrypoint.sh /
 COPY ./createEnvFile.sh /createEnvFile.sh
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
 
