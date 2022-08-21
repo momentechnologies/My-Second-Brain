@@ -4,6 +4,7 @@ import Dashboard from './Dashboard';
 import AppHeader from '../../components/AppHeader';
 import Projects from './Projects';
 import Process from './Process';
+import Notes from './Notes';
 
 const Index = () => {
     const routes = useRoutes([
@@ -18,6 +19,10 @@ const Index = () => {
         {
             path: '/process',
             element: <Process />,
+        },
+        {
+            path: '/notes',
+            element: <Notes />,
         },
         {
             path: '*',

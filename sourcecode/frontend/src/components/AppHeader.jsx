@@ -26,6 +26,10 @@ const AppHeader = () => {
             label: 'Process',
             path: '/app/process',
         },
+        {
+            label: 'Notes',
+            path: '/app/notes',
+        },
     ];
 
     return (
