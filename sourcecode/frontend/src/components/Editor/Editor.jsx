@@ -7,6 +7,11 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import ToolbarPlugin from './plugins/Toolbar';
+import EditorNodes from './nodes';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { Box } from '@mui/material';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 
 const theme = {
     ltr: 'ltr',
@@ -55,17 +60,27 @@ const Editor = () => {
         namespace: 'MyEditor',
         theme,
         onError,
+        nodes: EditorNodes,
     };
 
     return (
         <LexicalComposer initialConfig={initialConfig}>
-            <RichTextPlugin
-                contentEditable={<ContentEditable />}
-                placeholder={<div>Enter some text...</div>}
-            />
-            <OnChangePlugin onChange={onChange} />
-            <HistoryPlugin />
-            <MyCustomAutoFocusPlugin />
+            <div className="editor-container">
+                <ToolbarPlugin />
+                <div className="editor-inner">
+                    <RichTextPlugin
+                        contentEditable={
+                            <ContentEditable className="editor-input" />
+                        }
+                        placeholder={<div>Enter some text...</div>}
+                    />
+                    <OnChangePlugin onChange={onChange} />
+                    <HistoryPlugin />
+                    <AutoFocusPlugin />
+                    <MyCustomAutoFocusPlugin />
+                    <ListPlugin />
+                </div>
+            </div>
         </LexicalComposer>
     );
 };
