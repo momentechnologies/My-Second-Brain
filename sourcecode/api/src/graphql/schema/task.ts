@@ -12,7 +12,7 @@ export const schema = gql`
     }
 
     type Query {
-        tasks(filters: GetTasksFiltersInput! = {}): [Task!]!
+        tasks(filters: GetTasksFiltersInput! = {}): [Task!]! @auth
     }
 
     input GetTasksFiltersInput {

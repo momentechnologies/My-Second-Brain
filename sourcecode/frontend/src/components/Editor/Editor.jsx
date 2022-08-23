@@ -10,8 +10,8 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import ToolbarPlugin from './plugins/Toolbar';
 import EditorNodes from './nodes';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
-import { Box } from '@mui/material';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import IntialState from './plugins/IntialState';
 
 const theme = {
     ltr: 'ltr',
@@ -55,7 +55,9 @@ const onError = (error) => {
     console.error(error);
 };
 
-const Editor = () => {
+const Editor = ({ initialEditorState, onChange }) => {
+    const readOnly = !onChange;
+
     const initialConfig = {
         namespace: 'MyEditor',
         theme,
@@ -66,19 +68,28 @@ const Editor = () => {
     return (
         <LexicalComposer initialConfig={initialConfig}>
             <div className="editor-container">
-                <ToolbarPlugin />
+                {!readOnly && <ToolbarPlugin />}
+
                 <div className="editor-inner">
                     <RichTextPlugin
                         contentEditable={
                             <ContentEditable className="editor-input" />
                         }
-                        placeholder={<div>Enter some text...</div>}
+                        placeholder={
+                            <div className="editor-placeholder">
+                                Enter some text...
+                            </div>
+                        }
                     />
-                    <OnChangePlugin onChange={onChange} />
+                    {!readOnly && <OnChangePlugin onChange={onChange} />}
                     <HistoryPlugin />
                     <AutoFocusPlugin />
                     <MyCustomAutoFocusPlugin />
                     <ListPlugin />
+                    <IntialState
+                        value={initialEditorState}
+                        readOnly={readOnly}
+                    />
                 </div>
             </div>
         </LexicalComposer>

@@ -18,6 +18,12 @@ apiRouter.get('/', (req, res) => {
     });
 });
 
+router.get('/', (req, res) => {
+    res.json({
+        message: 'Welcome to the My Second Brain API',
+    });
+});
+
 router.use('/api', addContextToRequest, addUserToRequest, apiRouter);
 
 export default router;

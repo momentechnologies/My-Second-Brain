@@ -6,6 +6,7 @@ import directives from './directives';
 
 import * as auth from './auth';
 import * as externalTypes from './externalTypes';
+import * as node from './node';
 import * as project from './project';
 import * as task from './task';
 import * as user from './user';
@@ -26,6 +27,6 @@ const get = (directiveTypes, services) => ({
 
 export default directives.decorate(
     SchemaTools.makeExecutableSchema(
-        get(directives.types, [auth, externalTypes, project, task, user])
+        get(directives.types, [auth, externalTypes, node, project, task, user])
     )
 );

@@ -42,7 +42,8 @@ h1 {
 .editor-container {
     margin: 20px auto 20px auto;
     border-radius: 2px;
-    max-width: 600px;
+    max-width: 900px;
+    width: 100%;
     color: #000;
     position: relative;
     line-height: 20px;
@@ -66,7 +67,6 @@ h1 {
     tab-size: 1;
     outline: 0;
     padding: 15px 10px;
-    caret-color: #444;
 }
 
 .editor-placeholder {
@@ -346,6 +346,7 @@ pre::-webkit-scrollbar-thumb {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     vertical-align: middle;
+    border-bottom: 1px solid gray;
 }
 
 .toolbar button.toolbar-item {
