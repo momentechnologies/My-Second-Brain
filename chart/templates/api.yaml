@@ -96,6 +96,9 @@ spec:
       labels:
         app: api
     spec:
+{{ if .Values.api.serviceAccountName }}
+      serviceAccountName: {{ .Values.api.serviceAccountName }}
+{{ end }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
