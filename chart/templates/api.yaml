@@ -2,7 +2,7 @@
 {{- $apiEnvConfig := dict -}}
 {{- $_ := set $apiEnvConfig "NODE_ENV" "production" -}}
 {{- $_ := set $apiEnvConfig "PORT" 80 -}}
-{{- $_ := set $apiEnvConfig "CONFIG_DB_HOST" "localhost" -}}
+{{- $_ := set $apiEnvConfig "CONFIG_DB_HOST" "127.0.0.1" -}}
 {{- $_ := set $apiEnvConfig "CONFIG_DB_DATABASE" .Global.Values.api.database.databaseName -}}
 {{- $_ := set $apiEnvConfig "CONFIG_DB_USER" .Global.Values.api.database.user -}}
 {{- $_ := set $apiEnvConfig "CONFIG_DB_PASSWORD" .Global.Values.api.database.password -}}
