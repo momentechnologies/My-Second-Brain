@@ -2,21 +2,21 @@ import React from 'react';
 import {
     Box,
     Button,
-    Chip,
     Container,
     Grid,
     Paper,
-    Stack,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow,
-    TextField,
 } from '@mui/material';
 import DefaultHookQuery from '../../../components/DefaultHookQuery';
+import { useNavigate } from 'react-router-dom';
 
 const Projects = ({ queryHookData, onCreateNew, onUpdate }) => {
+    const navigate = useNavigate();
+
     return (
         <Container>
             <Grid container>
@@ -56,6 +56,13 @@ const Projects = ({ queryHookData, onCreateNew, onUpdate }) => {
                                                         <TableRow
                                                             key={project.id}
                                                             hover
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    String(
+                                                                        project.id
+                                                                    )
+                                                                )
+                                                            }
                                                         >
                                                             <TableCell>
                                                                 {project.name}

@@ -29,16 +29,16 @@ export const notAuthenticatedRoutes = [
         element: <Home />,
     },
     {
-        path: '/signup',
+        path: '/auth/signup',
         element: <Signup />,
     },
     {
-        path: '/login',
+        path: '/auth/login',
         element: <Login />,
     },
     {
         path: '*',
-        element: <Navigate to="/login" replace />,
+        element: <Navigate to="/auth/login" replace />,
     },
 ];
 

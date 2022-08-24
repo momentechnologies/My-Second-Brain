@@ -8,6 +8,7 @@ import NotFoundException from '../../exceptions/notFound';
 export const schema = gql`
     type Query {
         projects: [Project!]! @auth
+        project(id: Int!): Project @auth
     }
 
     type Mutation {
@@ -35,6 +36,7 @@ export const schema = gql`
         deadline: DateTime
         createdAt: DateTime!
         updatedAt: DateTime!
+        tasks(filters: GetTasksFiltersInput! = {}): [Task!]!
     }
 `;
 
@@ -50,6 +52,15 @@ export const resolvers = {
     Query: {
         projects: async (_, args, context: Context) =>
             context.db().project.getAllForUserId.load(context.user.id),
+        project: async (_, { id }, context: Context) => {
+            const project = await context.db().project.getById.load(id);
+
+            if (!project || project.userId !== context.user.id) {
+                throw new NotFoundException('project');
+            }
+
+            return project;
+        },
     },
     Mutation: {
         createProject: async (_, { data }, context: Context) => {

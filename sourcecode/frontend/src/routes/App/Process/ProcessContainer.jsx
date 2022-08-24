@@ -8,6 +8,7 @@ const getUnassignedTasks = gql`
             id
             name
             isDone
+            projectId
         }
     }
 `;
@@ -15,13 +16,7 @@ const getUnassignedTasks = gql`
 const ProcessContainer = () => {
     const queryHookData = useQuery(getUnassignedTasks);
 
-    return (
-        <Process
-            queryHookData={queryHookData}
-            updateTaskProject={(taskId, projectId) => {}}
-            deleteTask={(taskId) => {}}
-        />
-    );
+    return <Process queryHookData={queryHookData} />;
 };
 
 export default ProcessContainer;

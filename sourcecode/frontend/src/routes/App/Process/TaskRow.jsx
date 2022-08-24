@@ -4,10 +4,12 @@ import ProjectPicker from '../../../components/ProjectPicker';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { gql, useMutation } from '@apollo/client';
 
-const UPDATE_TASK_PROJECT = gql`
-    mutation UpdateTaskProject($taskId: Int!, $projectId: Int) {
-        updateTaskProject(taskId: $taskId, projectId: $projectId) {
+const UPDATE_TASK = gql`
+    mutation UpdateTask($id: Int!, $data: UpdateTaskInput!) {
+        updateTask(id: $id, data: $data) {
             id
+            isDone
+            projectId
         }
     }
 `;
@@ -19,8 +21,7 @@ const DELETE_TASK = gql`
 `;
 
 const TaskRow = ({ task, onDeleted }) => {
-    const [updateTaskProject, updateTaskProjectStatus] =
-        useMutation(UPDATE_TASK_PROJECT);
+    const [updateTask, updateTaskProjectStatus] = useMutation(UPDATE_TASK);
     const [deleteTask, deleteTaskStatus] = useMutation(DELETE_TASK);
 
     return (
@@ -29,10 +30,12 @@ const TaskRow = ({ task, onDeleted }) => {
             <TableCell>
                 <ProjectPicker
                     onSetProjectId={(id) =>
-                        updateTaskProject({
+                        updateTask({
                             variables: {
-                                taskId: task.id,
-                                projectId: id ? parseInt(id) : null,
+                                id: task.id,
+                                data: {
+                                    projectId: id ? parseInt(id) : null,
+                                },
                             },
                         })
                     }

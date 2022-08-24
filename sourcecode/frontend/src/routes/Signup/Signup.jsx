@@ -17,10 +17,10 @@ import ManagedTextField from '../../components/ManagedForm/ManagedTextField';
 
 const Signup = ({ values, setValue, signupStatus, onSubmit }) => {
     return (
-        <Container>
+        <Container sx={{ mt: 2 }}>
             <Grid container>
                 <Grid item xs={12}>
-                    <Paper component={Box} p={2} mt={2}>
+                    <Paper component={Box} p={2}>
                         <h2>Create new account</h2>
                         <ManagedForm error={signupStatus.error}>
                             <Stack spacing={2}>

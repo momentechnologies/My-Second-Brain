@@ -12,7 +12,7 @@ import {
 
 const Login = ({ values, setValues, loading, error, login }) => {
     return (
-        <Container>
+        <Container sx={{ mt: 2 }}>
             <Grid container>
                 <Grid item md={6}>
                     <Card body component={Box} p={2}>
@@ -67,7 +67,7 @@ const Login = ({ values, setValues, loading, error, login }) => {
                                         </Button>
                                         {loading && <div>loading</div>}
                                     </div>
-                                    {error ? (
+                                    {error && (
                                         <Alert
                                             color="error"
                                             component={Box}
@@ -75,8 +75,6 @@ const Login = ({ values, setValues, loading, error, login }) => {
                                         >
                                             {error.message}
                                         </Alert>
-                                    ) : (
-                                        ''
                                     )}
                                 </Grid>
                             </Grid>

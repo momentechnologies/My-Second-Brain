@@ -3,7 +3,7 @@ import DataLoader from 'dataloader';
 
 const tableName = 'tasks';
 
-type Task = {
+export type Task = {
     userId: number;
     projectId?: number;
     name: string;
@@ -12,15 +12,42 @@ type Task = {
 };
 
 export default (db) => {
+    const getAllForProjectIdWithFiltersCache = {};
     return {
         ...repositoryHelpers.setupDefaultRepository<Task>(tableName, db),
-        getAllForProjectId: new DataLoader(async (projectIds: string[]) => {
-            const tasks = await db(tableName).whereIn('projectId', projectIds);
+        getAllForProjectIdWithFilters: (filters: {
+            onlyUnassigned: boolean | null;
+            onlyIsNotDone: boolean | null;
+        }) => {
+            const key = JSON.stringify(filters);
 
-            return projectIds.map((projectId) =>
-                tasks.filter((task) => task.projectId === projectId)
-            );
-        }),
+            if (!getAllForProjectIdWithFiltersCache[key]) {
+                getAllForProjectIdWithFiltersCache[key] = new DataLoader(
+                    async (projectIds: string[]) => {
+                        const query = db(tableName).whereIn(
+                            'projectId',
+                            projectIds
+                        );
+
+                        if (filters.onlyUnassigned) {
+                            query.whereNull(`projectId`);
+                        }
+
+                        if (filters.onlyIsNotDone) {
+                            query.where(`isDone`, false);
+                        }
+
+                        const tasks = await query;
+
+                        return projectIds.map((projectId) =>
+                            tasks.filter((task) => task.projectId === projectId)
+                        );
+                    }
+                );
+            }
+
+            return getAllForProjectIdWithFiltersCache[key];
+        },
         get: async (
             userId: number,
             filters: { onlyUnassigned: boolean | null }
