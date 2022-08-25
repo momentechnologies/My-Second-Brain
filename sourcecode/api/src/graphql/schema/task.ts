@@ -31,7 +31,7 @@ export const schema = gql`
 
     type Task {
         id: Int!
-        projectId: Int!
+        projectId: Int
         name: String!
         isDone: Boolean!
         isArchived: Boolean!
