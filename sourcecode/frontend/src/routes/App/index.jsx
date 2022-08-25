@@ -9,6 +9,7 @@ import Nodes from './Nodes';
 import EditNode from './EditNode';
 import Node from './Node';
 import Project from './Project';
+import EditNote from './EditNote';
 
 const Index = () => {
     const routes = useRoutes([
@@ -31,6 +32,10 @@ const Index = () => {
         {
             path: '/notes',
             element: <Notes />,
+        },
+        {
+            path: '/notes/create',
+            element: <EditNote />,
         },
         {
             path: '/nodes',

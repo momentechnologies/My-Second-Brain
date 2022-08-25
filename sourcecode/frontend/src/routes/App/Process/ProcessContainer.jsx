@@ -10,6 +10,12 @@ const getUnassignedTasks = gql`
             isDone
             projectId
         }
+        notes(filters: { onlyUnassigned: true }) {
+            id
+            name
+            parentNodeId
+            content
+        }
     }
 `;
 

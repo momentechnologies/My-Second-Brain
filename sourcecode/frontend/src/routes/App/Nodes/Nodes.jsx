@@ -12,9 +12,10 @@ import {
     TableRow,
 } from '@mui/material';
 import DefaultHookQuery from '../../../components/DefaultHookQuery';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Nodes = ({ queryHookData, onCreateNew, onUpdate }) => {
+const Nodes = ({ queryHookData, onUpdate }) => {
+    const navigate = useNavigate();
     return (
         <Container>
             <Grid container>
@@ -54,6 +55,12 @@ const Nodes = ({ queryHookData, onCreateNew, onUpdate }) => {
                                                     <TableRow
                                                         key={node.id}
                                                         hover
+                                                        onClick={() =>
+                                                            navigate(
+                                                                '/app/nodes/' +
+                                                                    node.id
+                                                            )
+                                                        }
                                                     >
                                                         <TableCell>
                                                             {node.name}

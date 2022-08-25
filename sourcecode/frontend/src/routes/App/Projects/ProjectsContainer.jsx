@@ -36,8 +36,8 @@ const ProjectsContainer = () => {
         open: false,
         values: null,
     });
-    const [createPoleGprScans, createMetadata] = useMutation(CREATE_PROJECT);
-    const [updatePoleGprScan, updateMetadata] = useMutation(UPDATE_PROJECT);
+    const [createProject, createMetadata] = useMutation(CREATE_PROJECT);
+    const [updateProject, updateMetadata] = useMutation(UPDATE_PROJECT);
 
     return (
         <>
@@ -61,14 +61,14 @@ const ProjectsContainer = () => {
 
                     let action;
                     if (dialogInfo.values) {
-                        action = updatePoleGprScan({
+                        action = updateProject({
                             variables: {
                                 id: values.id,
                                 data: parsedValues,
                             },
                         });
                     } else {
-                        action = createPoleGprScans({
+                        action = createProject({
                             variables: {
                                 data: parsedValues,
                             },

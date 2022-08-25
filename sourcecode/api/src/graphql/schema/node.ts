@@ -19,6 +19,8 @@ export const schema = gql`
         parentNodeId: Int
         name: String!
         content: String!
+        nodes: [Node!]!
+        notes: [Note!]!
         isArchived: Boolean!
         createdAt: DateTime!
         updatedAt: DateTime!
@@ -58,5 +60,11 @@ export const resolvers = {
     },
     Node: {
         content: ({ content }) => JSON.stringify(content),
+        nodes: async ({ id }, { parentNodeId }, context: Context) => {
+            return await context
+                .db()
+                .node.getAllForParentNodeId(context.user.id)
+                .load(id);
+        },
     },
 };

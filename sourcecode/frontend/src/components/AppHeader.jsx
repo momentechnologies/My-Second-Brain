@@ -19,6 +19,10 @@ const AppHeader = () => {
     const [menuIsOpen, setMenuIsOpen] = React.useState(false);
     const links = [
         {
+            label: 'Dashboard',
+            path: '/app',
+        },
+        {
             label: 'Projects',
             path: '/app/projects',
         },
@@ -66,8 +70,8 @@ const AppHeader = () => {
                 <Typography
                     variant="h6"
                     noWrap
-                    component="a"
-                    href="/app"
+                    component={Link}
+                    to="/app"
                     sx={{
                         mr: 2,
                         display: { xs: 'flex', md: 'none' },

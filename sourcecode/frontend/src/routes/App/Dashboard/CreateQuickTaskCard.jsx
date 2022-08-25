@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Box, Button, Paper } from '@mui/material';
+import { Alert, Box, Button, Divider, Paper, Typography } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import ManagedTextField from '../../../components/ManagedForm/ManagedTextField';
 import { gql, useMutation } from '@apollo/client';
@@ -17,7 +17,7 @@ const CREATE_QUICK_TASK = gql`
 const defaultValues = {
     name: '',
 };
-const BrainDumpCard = () => {
+const CreateQuickTaskCard = () => {
     const [createQuickTask, { error, loading }] =
         useMutation(CREATE_QUICK_TASK);
 
@@ -41,7 +41,7 @@ const BrainDumpCard = () => {
 
     return (
         <Paper component={Box} p={2} mt={2}>
-            <h2>Brain dump</h2>
+            <h2>Quickly create task</h2>
             <ManagedForm error={error}>
                 <form
                     onSubmit={(e) => {
@@ -54,7 +54,7 @@ const BrainDumpCard = () => {
                             inputKey="name"
                             value={values.name}
                             onChange={(e) => setValue('name', e.target.value)}
-                            label="To-do item to dump"
+                            label="Task"
                             fullWidth
                             required
                         ></ManagedTextField>
@@ -73,4 +73,4 @@ const BrainDumpCard = () => {
     );
 };
 
-export default BrainDumpCard;
+export default CreateQuickTaskCard;

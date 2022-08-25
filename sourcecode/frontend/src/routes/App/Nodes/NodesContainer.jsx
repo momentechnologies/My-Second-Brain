@@ -3,7 +3,7 @@ import Nodes from './Nodes';
 import { gql, useQuery } from '@apollo/client';
 
 const getNodesQuery = gql`
-    query GetProjectsQuery($parentNodeId: Int) {
+    query GetNodes($parentNodeId: Int) {
         nodes(parentNodeId: $parentNodeId) {
             id
             name
@@ -13,6 +13,7 @@ const getNodesQuery = gql`
 
 const NodesContainer = () => {
     const queryHookData = useQuery(getNodesQuery);
+
     return <Nodes queryHookData={queryHookData} />;
 };
 
