@@ -14,8 +14,8 @@ export const schema = gql`
     }
 
     type Query {
-        notes(filters: GetNotesFiltersInput! = {}): [Node!]! @auth
-        note(id: Int!): Node @auth
+        notes(filters: GetNotesFiltersInput! = {}): [Note!]! @auth
+        note(id: Int!): Note @auth
     }
 
     input GetNotesFiltersInput {
