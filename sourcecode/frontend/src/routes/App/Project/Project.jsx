@@ -23,15 +23,14 @@ const Project = ({ project }) => {
                         <h1>{project.name}</h1>
                     </Paper>
                     <Paper component={Box} p={2} mt={2}>
+                        <h2>Tasks</h2>
                         <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>
-                                        <strong>Name</strong>
+                                        <strong>Task</strong>
                                     </TableCell>
-                                    <TableCell>
-                                        <strong>Done</strong>
-                                    </TableCell>
+                                    <TableCell />
                                 </TableRow>
                             </TableHead>
                             <TableBody>

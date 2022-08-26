@@ -18,7 +18,7 @@ const TaskRow = ({ task, startValueIsDone = false }) => {
     return (
         <TableRow>
             <TableCell>{task.name}</TableCell>
-            <TableCell>
+            <TableCell align="right">
                 <Checkbox
                     checked={done}
                     onChange={() => {
