@@ -99,4 +99,18 @@ export const resolvers = {
             });
         },
     },
+    Task: {
+        project: async ({ projectId }, args, context: Context) => {
+            if (!projectId) {
+                return null;
+            }
+
+            const project = await context.db().project.getById.load(projectId);
+            if (!project || project.userId !== context.user.id) {
+                return null;
+            }
+
+            return project;
+        },
+    },
 };

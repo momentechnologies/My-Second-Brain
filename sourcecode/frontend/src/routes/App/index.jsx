@@ -10,6 +10,7 @@ import EditNode from './EditNode';
 import Node from './Node';
 import Project from './Project';
 import EditNote from './EditNote';
+import MyDay from './MyDay';
 
 const Index = () => {
     const routes = useRoutes([
@@ -48,6 +49,10 @@ const Index = () => {
         {
             path: '/nodes/:nodeId',
             element: <Node />,
+        },
+        {
+            path: '/my-day',
+            element: <MyDay />,
         },
         {
             path: '*',

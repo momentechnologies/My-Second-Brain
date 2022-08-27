@@ -33,7 +33,7 @@ const ProjectPicker = ({ onSetProjectId }) => {
                             value: p.id,
                         }))}
                         renderInput={(params) => (
-                            <TextField {...params} label="Project" />
+                            <TextField {...params} label="MyDay" />
                         )}
                     />
                 );

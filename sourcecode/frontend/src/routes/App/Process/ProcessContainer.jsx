@@ -20,7 +20,9 @@ const getUnassignedTasks = gql`
 `;
 
 const ProcessContainer = () => {
-    const queryHookData = useQuery(getUnassignedTasks);
+    const queryHookData = useQuery(getUnassignedTasks, {
+        fetchPolicy: 'network-only',
+    });
 
     return <Process queryHookData={queryHookData} />;
 };

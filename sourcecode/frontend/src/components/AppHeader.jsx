@@ -23,6 +23,10 @@ const AppHeader = () => {
             path: '/app',
         },
         {
+            label: 'My day',
+            path: '/app/my-day',
+        },
+        {
             label: 'Projects',
             path: '/app/projects',
         },

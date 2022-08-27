@@ -37,6 +37,7 @@ export const schema = gql`
         isArchived: Boolean!
         createdAt: DateTime!
         updatedAt: DateTime!
+        project: Project!
     }
 `;
 
@@ -132,8 +133,10 @@ export const resolvers = {
     },
     Query: {
         tasks: async (_, { filters }, context: Context) => {
+            console.log(filters);
             return await context.db().task.get(context.user.id, {
                 onlyUnassigned: filters.onlyUnassigned,
+                onlyIsNotDone: filters.onlyIsNotDone,
             });
         },
     },

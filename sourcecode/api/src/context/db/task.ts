@@ -50,7 +50,10 @@ export default (db) => {
         },
         get: async (
             userId: number,
-            filters: { onlyUnassigned: boolean | null }
+            filters: {
+                onlyUnassigned: boolean | null;
+                onlyIsNotDone: boolean | null;
+            }
         ) => {
             const query = db(tableName)
                 .select(`${tableName}.*`)
@@ -58,6 +61,10 @@ export default (db) => {
 
             if (filters.onlyUnassigned) {
                 query.whereNull(`projectId`);
+            }
+
+            if (filters.onlyIsNotDone) {
+                query.where(`isDone`, false);
             }
 
             return query;

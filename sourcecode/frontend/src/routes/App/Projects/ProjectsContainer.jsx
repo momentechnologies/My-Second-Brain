@@ -31,7 +31,9 @@ const UPDATE_PROJECT = gql`
 `;
 
 const ProjectsContainer = () => {
-    const queryHookData = useQuery(getProjectsQuery);
+    const queryHookData = useQuery(getProjectsQuery, {
+        fetchPolicy: 'network-only',
+    });
     const [dialogInfo, setDialogInfo] = React.useState({
         open: false,
         values: null,
