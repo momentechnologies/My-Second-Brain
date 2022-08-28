@@ -4,11 +4,12 @@ import validateJoi from '../../services/validateJoi';
 import Joi from 'joi';
 import NotFoundException from '../../exceptions/notFound';
 import { Task } from '../../context/db/task';
+import { graphqlUpdateDataBuilder } from '../../services/db/graphqlUpdateDataBuilder';
+import { projectStatuses } from '../../context/db/project';
 
 export const schema = gql`
     type Mutation {
         createQuickTask(name: String!): Task @auth
-        updateTaskProject(taskId: Int!, projectId: Int): Task @auth
         updateTask(id: Int!, data: UpdateTaskInput!): Task @auth
         deleteTask(taskId: Int!): Boolean @auth
     }
@@ -25,6 +26,8 @@ export const schema = gql`
     input UpdateTaskInput {
         name: String
         projectId: Int
+        context: String
+        dueAt: DateTime
         isDone: Boolean
         isArchived: Boolean
     }
@@ -71,53 +74,32 @@ export const resolvers = {
                     name: Joi.string().min(1).optional(),
                     isDone: Joi.boolean().optional(),
                     projectId: Joi.number().min(1).allow(null).optional(),
+                    dueAt: Joi.string().isoDate().allow(null).optional(),
+                    context: Joi.string()
+                        .valid('doNext', 'delegated', 'someday')
+                        .allow(null)
+                        .optional(),
                 })
             );
 
-            let dataToUpdate: Partial<Task> = {};
+            const dataToUpdate = await graphqlUpdateDataBuilder(parsedData, {
+                projectId: async (projectId) => {
+                    const project = await context
+                        .db()
+                        .project.getById.load(projectId);
 
-            if (parsedData.isDone !== undefined) {
-                dataToUpdate.isDone = parsedData.isDone;
-            }
+                    if (!project || project.userId !== context.user.id) {
+                        throw new NotFoundException('project');
+                    }
 
-            if (parsedData.projectId !== undefined) {
-                const project = await context
-                    .db()
-                    .project.getById.load(parsedData.projectId);
-
-                if (!project || project.userId !== context.user.id) {
-                    throw new NotFoundException('project');
-                }
-
-                dataToUpdate.projectId = project.id;
-            }
+                    return project.id;
+                },
+                isDone: async (value) => value,
+                context: async (value) => value,
+                dueAt: async (value) => value,
+            });
 
             return await context.db().task.updateById(id, dataToUpdate);
-        },
-        updateTaskProject: async (
-            _,
-            { taskId, projectId },
-            context: Context
-        ) => {
-            const task = await context.db().task.getById.load(taskId);
-
-            if (!task || task.userId !== context.user.id) {
-                throw new NotFoundException('task');
-            }
-
-            if (projectId) {
-                const project = await context
-                    .db()
-                    .project.getById.load(projectId);
-
-                if (!project || project.userId !== context.user.id) {
-                    throw new NotFoundException('project');
-                }
-            }
-
-            return await context.db().task.updateById(taskId, {
-                projectId,
-            });
         },
         deleteTask: async (_, { taskId }, context: Context) => {
             const task = await context.db().task.getById.load(taskId);
