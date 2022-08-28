@@ -44,6 +44,15 @@ spec:
       containers:
         - name: startup
           image: "{{ .Values.frontend.image }}"
+          resources:
+            limits:
+              cpu: 500m
+              ephemeral-storage: 250Mi
+              memory: 500Mi
+            requests:
+              cpu: 50m
+              ephemeral-storage: 125Mi
+              memory: 250Mi
           env:
 {{- include "frontend.envBlock" ( dict "Global" . ) | indent 12 }}
 ---

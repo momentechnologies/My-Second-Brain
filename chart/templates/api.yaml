@@ -124,6 +124,15 @@ spec:
           volumeMounts:
             - name: lifecycle
               mountPath: /lifecycle
+          resources:
+            limits:
+              cpu: 500m
+              ephemeral-storage: 250Mi
+              memory: 500Mi
+            requests:
+              cpu: 50m
+              ephemeral-storage: 125Mi
+              memory: 250Mi
           env:
   {{- include "api.envBlock" ( dict "Global" . ) | indent 12 }}
         - name: cloud-sql-proxy
@@ -149,6 +158,15 @@ spec:
           volumeMounts:
             - name: lifecycle
               mountPath: /lifecycle
+          resources:
+            limits:
+              cpu: 500m
+              ephemeral-storage: 250Mi
+              memory: 500Mi
+            requests:
+              cpu: 50m
+              ephemeral-storage: 125Mi
+              memory: 250Mi
       volumes:
         - name: lifecycle
           emptyDir:
