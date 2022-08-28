@@ -32,12 +32,12 @@ export const schema = gql`
     type Task {
         id: Int!
         projectId: Int
+        project: Project
         name: String!
         isDone: Boolean!
         isArchived: Boolean!
         createdAt: DateTime!
         updatedAt: DateTime!
-        project: Project!
     }
 `;
 
