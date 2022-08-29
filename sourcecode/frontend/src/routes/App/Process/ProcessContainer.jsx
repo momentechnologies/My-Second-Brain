@@ -9,6 +9,12 @@ const getUnassignedTasks = gql`
             name
             isDone
             projectId
+            project {
+                id
+                name
+            }
+            context
+            dueAt
         }
         notes(filters: { onlyUnassigned: true }) {
             id

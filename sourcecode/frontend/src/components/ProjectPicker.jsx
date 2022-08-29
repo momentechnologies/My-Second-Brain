@@ -14,9 +14,9 @@ const getProjectsQuery = gql`
     }
 `;
 
-const ProjectPicker = ({ onSetProjectId }) => {
+const ProjectPicker = ({ onSetProjectId, startValue = null }) => {
     const queryHookData = useQuery(getProjectsQuery);
-    const [value, setValue] = React.useState(null);
+    const [value, setValue] = React.useState(startValue);
 
     return (
         <DefaultHookQuery queryHookData={queryHookData}>
@@ -33,7 +33,7 @@ const ProjectPicker = ({ onSetProjectId }) => {
                             value: p.id,
                         }))}
                         renderInput={(params) => (
-                            <TextField {...params} label="MyDay" />
+                            <TextField {...params} label="Project" />
                         )}
                     />
                 );

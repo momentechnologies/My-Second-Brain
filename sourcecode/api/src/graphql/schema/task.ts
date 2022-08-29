@@ -35,6 +35,8 @@ export const schema = gql`
     type Task {
         id: Int!
         projectId: Int
+        context: String
+        dueAt: DateTime
         project: Project
         name: String!
         isDone: Boolean!
@@ -74,7 +76,7 @@ export const resolvers = {
                     name: Joi.string().min(1).optional(),
                     isDone: Joi.boolean().optional(),
                     projectId: Joi.number().min(1).allow(null).optional(),
-                    dueAt: Joi.string().isoDate().allow(null).optional(),
+                    dueAt: Joi.date().allow(null).optional(),
                     context: Joi.string()
                         .valid('doNext', 'delegated', 'someday')
                         .allow(null)
@@ -84,6 +86,9 @@ export const resolvers = {
 
             const dataToUpdate = await graphqlUpdateDataBuilder(parsedData, {
                 projectId: async (projectId) => {
+                    if (!projectId) {
+                        return null;
+                    }
                     const project = await context
                         .db()
                         .project.getById.load(projectId);

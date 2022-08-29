@@ -9,6 +9,8 @@ import { BrowserRouter } from 'react-router-dom';
 import StartupContainer from './containers/StartupContainer';
 import AuthProvider from './containers/AuthProvider';
 import Theme from './containers/Theme';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
 const client = new ApolloClient({
     uri: apiConfig.url + '/api/graphql',
@@ -20,15 +22,17 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <Theme>
-            <ApolloProvider client={client}>
-                <BrowserRouter>
-                    <StartupContainer>
-                        <AuthProvider>
-                            <App />
-                        </AuthProvider>
-                    </StartupContainer>
-                </BrowserRouter>
-            </ApolloProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <ApolloProvider client={client}>
+                    <BrowserRouter>
+                        <StartupContainer>
+                            <AuthProvider>
+                                <App />
+                            </AuthProvider>
+                        </StartupContainer>
+                    </BrowserRouter>
+                </ApolloProvider>
+            </LocalizationProvider>
         </Theme>
     </React.StrictMode>
 );

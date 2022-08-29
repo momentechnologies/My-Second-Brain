@@ -14,9 +14,11 @@ import DefaultHookQuery from '../../../components/DefaultHookQuery';
 import TaskRow from './TaskRow';
 import NoteRow from './NoteRow';
 import NoteModal from './NoteModal';
+import TaskEditModal from '../../../components/TaskEditModal';
 
 const Process = ({ queryHookData }) => {
     const [selectedNoteToEdit, setSelectedNoteToEdit] = React.useState(null);
+    const [selectedTaskToEdit, setSelectedTaskToEdit] = React.useState(null);
 
     return (
         <>
@@ -25,14 +27,11 @@ const Process = ({ queryHookData }) => {
                     <Grid item xs={12}>
                         <Paper component={Box} p={2} mt={2}>
                             <h2>Tasks</h2>
-                            <Table>
+                            <Table size="small">
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>
                                             <strong>Name</strong>
-                                        </TableCell>
-                                        <TableCell>
-                                            <strong>Project</strong>
                                         </TableCell>
                                         <TableCell width={40} />
                                     </TableRow>
@@ -50,6 +49,11 @@ const Process = ({ queryHookData }) => {
                                                             task={task}
                                                             onDeleted={() =>
                                                                 refetch()
+                                                            }
+                                                            onClick={() =>
+                                                                setSelectedTaskToEdit(
+                                                                    task
+                                                                )
                                                             }
                                                         />
                                                     ))}
@@ -110,6 +114,17 @@ const Process = ({ queryHookData }) => {
                 onSaved={() => {
                     setSelectedNoteToEdit(null);
                     queryHookData.refetch();
+                }}
+            />
+            <TaskEditModal
+                task={selectedTaskToEdit}
+                onClose={() => setSelectedTaskToEdit(null)}
+                onUpdated={(updatedTask) => {
+                    console.log(updatedTask);
+                    setSelectedTaskToEdit({
+                        ...selectedTaskToEdit,
+                        ...updatedTask,
+                    });
                 }}
             />
         </>
