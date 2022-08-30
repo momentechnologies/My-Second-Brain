@@ -17,7 +17,7 @@ export default (db) => {
         ...repositoryHelpers.setupDefaultRepository<Task>(tableName, db),
         getAllForProjectIdWithFilters: (filters: {
             onlyUnassigned: boolean | null;
-            onlyIsNotDone: boolean | null;
+            showIsDone: boolean | null;
         }) => {
             const key = JSON.stringify(filters);
 
@@ -33,7 +33,7 @@ export default (db) => {
                             query.whereNull(`projectId`);
                         }
 
-                        if (filters.onlyIsNotDone) {
+                        if (!filters.showIsDone) {
                             query.where(`isDone`, false);
                         }
 
@@ -52,7 +52,7 @@ export default (db) => {
             userId: number,
             filters: {
                 onlyUnassigned: boolean | null;
-                onlyIsNotDone: boolean | null;
+                showIsDone: boolean | null;
             }
         ) => {
             const query = db(tableName)
@@ -63,7 +63,7 @@ export default (db) => {
                 query.whereNull(`projectId`);
             }
 
-            if (filters.onlyIsNotDone) {
+            if (!filters.showIsDone) {
                 query.where(`isDone`, false);
             }
 

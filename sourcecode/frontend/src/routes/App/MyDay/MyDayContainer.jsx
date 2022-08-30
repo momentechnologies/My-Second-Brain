@@ -5,7 +5,7 @@ import DefaultHookQuery from '../../../components/DefaultHookQuery';
 
 const getProjectQuery = gql`
     query GetMyDay {
-        tasks(filters: { onlyIsNotDone: true }) {
+        tasks(filters: {}) {
             id
             name
             isDone

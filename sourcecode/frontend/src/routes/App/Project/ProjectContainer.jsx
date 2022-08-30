@@ -9,7 +9,7 @@ const getProjectQuery = gql`
         project(id: $id) {
             id
             name
-            tasks(filters: { onlyIsNotDone: true }) {
+            tasks(filters: {}) {
                 id
                 name
                 isDone

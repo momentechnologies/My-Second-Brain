@@ -20,7 +20,7 @@ export const schema = gql`
 
     input GetTasksFiltersInput {
         onlyUnassigned: Boolean = false
-        onlyIsNotDone: Boolean = false
+        showIsDone: Boolean = false
     }
 
     input UpdateTaskInput {
@@ -120,10 +120,9 @@ export const resolvers = {
     },
     Query: {
         tasks: async (_, { filters }, context: Context) => {
-            console.log(filters);
             return await context.db().task.get(context.user.id, {
                 onlyUnassigned: filters.onlyUnassigned,
-                onlyIsNotDone: filters.onlyIsNotDone,
+                showIsDone: filters.showIsDone,
             });
         },
     },
