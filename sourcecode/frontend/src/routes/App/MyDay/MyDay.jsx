@@ -22,14 +22,12 @@ const MyDay = ({ tasks }) => {
                     </Paper>
                     <Paper component={Box} p={2} mt={2}>
                         <h2>Tasks</h2>
-                        <Table>
+                        <Table size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>
-                                        <strong>Task</strong>
-                                    </TableCell>
-                                    <TableCell>
-                                        <strong>Project</strong>
+                                    <TableCell variant="head">Task</TableCell>
+                                    <TableCell variant="head">
+                                        Project
                                     </TableCell>
                                     <TableCell />
                                 </TableRow>
