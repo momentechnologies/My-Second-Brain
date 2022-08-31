@@ -53,6 +53,7 @@ export default (db) => {
             filters: {
                 onlyUnassigned: boolean | null;
                 showIsDone: boolean | null;
+                context: boolean | null;
             }
         ) => {
             const query = db(tableName)
@@ -60,11 +61,17 @@ export default (db) => {
                 .where('userId', userId);
 
             if (filters.onlyUnassigned) {
-                query.whereNull(`projectId`);
+                query.where((query) =>
+                    query.whereNull('projectId').orWhereNull('context')
+                );
             }
 
             if (!filters.showIsDone) {
                 query.where(`isDone`, false);
+            }
+
+            if (filters.context) {
+                query.where(`context`, filters.context);
             }
 
             return query;

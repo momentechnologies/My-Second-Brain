@@ -4,15 +4,28 @@ import {
     Container,
     Grid,
     Paper,
+    Tab,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow,
+    Tabs,
 } from '@mui/material';
 import TaskRow from './TaskRow';
 
-const MyDay = ({ tasks }) => {
+export const tabs = [
+    {
+        name: 'Do next',
+        value: 'doNext',
+    },
+    {
+        name: 'Delegated',
+        value: 'delegated',
+    },
+];
+
+const MyDay = ({ tasks, selectedTab, setSelectedTab }) => {
     return (
         <Container>
             <Grid container>
@@ -22,6 +35,16 @@ const MyDay = ({ tasks }) => {
                     </Paper>
                     <Paper component={Box} p={2} mt={2}>
                         <h2>Tasks</h2>
+                        <Box mb={2}>
+                            <Tabs
+                                value={selectedTab}
+                                onChange={(e, index) => setSelectedTab(index)}
+                            >
+                                {tabs.map((tab, index) => (
+                                    <Tab label={tab.name} key={index} />
+                                ))}
+                            </Tabs>
+                        </Box>
                         <Table size="small">
                             <TableHead>
                                 <TableRow>

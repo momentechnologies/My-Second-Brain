@@ -1,11 +1,11 @@
 import React from 'react';
-import MyDay from './MyDay';
+import MyDay, { tabs } from './MyDay';
 import { gql, useQuery } from '@apollo/client';
 import DefaultHookQuery from '../../../components/DefaultHookQuery';
 
 const getProjectQuery = gql`
-    query GetMyDay {
-        tasks(filters: {}) {
+    query GetMyDay($filters: GetTasksFiltersInput) {
+        tasks(filters: $filters) {
             id
             name
             isDone
@@ -19,14 +19,27 @@ const getProjectQuery = gql`
 `;
 
 const MyDayContainer = () => {
+    const [selectedTab, setSelectedTab] = React.useState(0);
+
     return (
         <DefaultHookQuery
             queryHookData={useQuery(getProjectQuery, {
                 fetchPolicy: 'network-only',
+                variables: {
+                    filters: {
+                        context: tabs[selectedTab].value,
+                    },
+                },
             })}
         >
             {({ data, refetch }) => {
-                return <MyDay tasks={data.tasks} />;
+                return (
+                    <MyDay
+                        tasks={data.tasks}
+                        selectedTab={selectedTab}
+                        setSelectedTab={setSelectedTab}
+                    />
+                );
             }}
         </DefaultHookQuery>
     );

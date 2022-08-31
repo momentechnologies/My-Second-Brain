@@ -3,9 +3,7 @@ import { Context } from '../../context';
 import validateJoi from '../../services/validateJoi';
 import Joi from 'joi';
 import NotFoundException from '../../exceptions/notFound';
-import { Task } from '../../context/db/task';
 import { graphqlUpdateDataBuilder } from '../../services/db/graphqlUpdateDataBuilder';
-import { projectStatuses } from '../../context/db/project';
 
 export const schema = gql`
     type Mutation {
@@ -21,6 +19,7 @@ export const schema = gql`
     input GetTasksFiltersInput {
         onlyUnassigned: Boolean = false
         showIsDone: Boolean = false
+        context: String
     }
 
     input UpdateTaskInput {
@@ -123,6 +122,7 @@ export const resolvers = {
             return await context.db().task.get(context.user.id, {
                 onlyUnassigned: filters.onlyUnassigned,
                 showIsDone: filters.showIsDone,
+                context: filters.context,
             });
         },
     },
