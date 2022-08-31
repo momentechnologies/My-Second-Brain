@@ -20,6 +20,7 @@ export const schema = gql`
         onlyUnassigned: Boolean = false
         showIsDone: Boolean = false
         context: String
+        dueBefore: DateTime
     }
 
     input UpdateTaskInput {
@@ -123,6 +124,7 @@ export const resolvers = {
                 onlyUnassigned: filters.onlyUnassigned,
                 showIsDone: filters.showIsDone,
                 context: filters.context,
+                dueBefore: filters.dueBefore,
             });
         },
     },

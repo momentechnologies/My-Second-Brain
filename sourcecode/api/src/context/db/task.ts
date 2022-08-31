@@ -54,6 +54,7 @@ export default (db) => {
                 onlyUnassigned: boolean | null;
                 showIsDone: boolean | null;
                 context: boolean | null;
+                dueBefore: Date | null;
             }
         ) => {
             const query = db(tableName)
@@ -72,6 +73,10 @@ export default (db) => {
 
             if (filters.context) {
                 query.where(`context`, filters.context);
+            }
+
+            if (filters.dueBefore) {
+                query.where(`dueAt`, '<', filters.dueBefore);
             }
 
             return query;

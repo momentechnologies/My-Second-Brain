@@ -14,6 +14,7 @@ const getProjectQuery = gql`
                 id
                 name
             }
+            dueAt
         }
     }
 `;
@@ -26,9 +27,7 @@ const MyDayContainer = () => {
             queryHookData={useQuery(getProjectQuery, {
                 fetchPolicy: 'network-only',
                 variables: {
-                    filters: {
-                        context: tabs[selectedTab].value,
-                    },
+                    filters: tabs[selectedTab].filters,
                 },
             })}
         >
