@@ -10,11 +10,12 @@ const getProjectQuery = gql`
             name
             isDone
             createdAt
+            dueAt
+            context
             project {
                 id
                 name
             }
-            dueAt
         }
     }
 `;

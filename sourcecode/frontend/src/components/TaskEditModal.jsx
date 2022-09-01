@@ -15,6 +15,8 @@ import ProjectPicker from './ProjectPicker';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { parseISO } from 'date-fns';
 import { Clear as ClearIcon } from '@mui/icons-material';
+import checkUndefinedParameters from '../helpers/checkUndefinedParameters';
+import taskContexts from '../constants/taskContexts';
 
 const UPDATE_TASK = gql`
     mutation UpdateTask($id: Int!, $data: UpdateTaskInput!) {
@@ -43,6 +45,11 @@ const TaskEditModal = ({ task, onClose, onUpdated }) => {
     const [deleteTask, deleteTaskStatus] = useMutation(DELETE_TASK);
 
     if (!task) return <></>;
+
+    checkUndefinedParameters([
+        ['context', task.context],
+        ['dueAt', task.dueAt],
+    ]);
 
     const update = (data) => {
         updateTask({
@@ -74,20 +81,20 @@ const TaskEditModal = ({ task, onClose, onUpdated }) => {
                         }
                     />
                     <Autocomplete
-                        value={task.context}
+                        value={
+                            task.context
+                                ? taskContexts.find(
+                                      (taskContext) =>
+                                          taskContext.value === task.context
+                                  )
+                                : null
+                        }
                         onChange={(event, newValue) => {
                             update({
                                 context: newValue ? newValue.value : null,
                             });
                         }}
-                        options={[
-                            { name: 'Do next', id: 'doNext' },
-                            { name: 'Someday', id: 'someday' },
-                            { name: 'Delegated', id: 'delegated' },
-                        ].map((p) => ({
-                            label: p.name,
-                            value: p.id,
-                        }))}
+                        options={taskContexts}
                         renderInput={(params) => (
                             <TextField {...params} label="context" />
                         )}
@@ -120,6 +127,7 @@ const TaskEditModal = ({ task, onClose, onUpdated }) => {
                                             <ClearIcon />
                                         </IconButton>
                                     ),
+                                    ...params.InputProps,
                                 }}
                             />
                         )}

@@ -82,6 +82,7 @@ const TaskRow = ({ task, startValueIsDone = false, onClick }) => {
                             },
                         });
                     }}
+                    onClick={(e) => e.stopPropagation()}
                 />
             </TableCell>
         </TableRow>
