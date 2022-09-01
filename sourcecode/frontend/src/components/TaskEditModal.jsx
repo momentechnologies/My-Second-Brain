@@ -1,7 +1,9 @@
 import React from 'react';
 import {
+    Alert,
     Autocomplete,
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -17,12 +19,14 @@ import { parseISO } from 'date-fns';
 import { Clear as ClearIcon } from '@mui/icons-material';
 import checkUndefinedParameters from '../helpers/checkUndefinedParameters';
 import taskContexts from '../constants/taskContexts';
+import { useDebounce } from 'moment-hooks';
 
 const UPDATE_TASK = gql`
     mutation UpdateTask($id: Int!, $data: UpdateTaskInput!) {
         updateTask(id: $id, data: $data) {
             id
             isDone
+            name
             project {
                 id
                 name
@@ -41,15 +45,26 @@ const DELETE_TASK = gql`
 `;
 
 const TaskEditModal = ({ task, onClose, onUpdated }) => {
-    const [updateTask, updateTaskProjectStatus] = useMutation(UPDATE_TASK);
-    const [deleteTask, deleteTaskStatus] = useMutation(DELETE_TASK);
-
-    if (!task) return <></>;
-
     checkUndefinedParameters([
         ['context', task.context],
         ['dueAt', task.dueAt],
     ]);
+
+    const [updateTask, updateTaskProjectStatus] = useMutation(UPDATE_TASK);
+    const [deleteTask, deleteTaskStatus] = useMutation(DELETE_TASK);
+
+    const [name, setName] = React.useState(task.name);
+    const debouncedName = useDebounce(name, 500);
+
+    React.useEffect(() => {
+        if (task.name === debouncedName || task.name.length === 0) {
+            return;
+        }
+
+        update({
+            name,
+        });
+    }, [debouncedName]);
 
     const update = (data) => {
         updateTask({
@@ -62,9 +77,29 @@ const TaskEditModal = ({ task, onClose, onUpdated }) => {
 
     return (
         <Dialog fullWidth maxWidth="md" open={true} onClose={onClose}>
+            {updateTaskProjectStatus.loading && (
+                <CircularProgress
+                    size={30}
+                    sx={{ position: 'absolute', right: 15, top: 15 }}
+                />
+            )}
             <DialogTitle>Edit task</DialogTitle>
             <DialogContent>
                 <Stack spacing={2} mt={2}>
+                    <TextField
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        label="Name"
+                        fullWidth
+                        required
+                        onBlur={() => {
+                            if (name.length !== 0) {
+                                update({
+                                    name,
+                                });
+                            }
+                        }}
+                    />
                     <ProjectPicker
                         startValue={
                             task.project
@@ -132,6 +167,11 @@ const TaskEditModal = ({ task, onClose, onUpdated }) => {
                             />
                         )}
                     />
+                    {updateTaskProjectStatus.error && (
+                        <Alert color="error">
+                            {updateTaskProjectStatus.error.message}
+                        </Alert>
+                    )}
                 </Stack>
             </DialogContent>
             <DialogActions>
@@ -143,4 +183,12 @@ const TaskEditModal = ({ task, onClose, onUpdated }) => {
     );
 };
 
-export default TaskEditModal;
+const Wrapper = (props) => {
+    if (!props.task) {
+        return <></>;
+    }
+
+    return <TaskEditModal {...props} />;
+};
+
+export default Wrapper;

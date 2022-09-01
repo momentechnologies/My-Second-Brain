@@ -102,6 +102,7 @@ export const resolvers = {
                 isDone: async (value) => value,
                 context: async (value) => value,
                 dueAt: async (value) => value,
+                name: async (value) => value,
             });
 
             return await context.db().task.updateById(id, dataToUpdate);
