@@ -2,18 +2,26 @@ steps:
   # Build the API image
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "--target", "prod", "-t", "${_API_IMAGE}", "./sourcecode/api"]
+    id: docker-build-api
+    waitFor: ['-']
 
   # Build the Frontend image
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "--target", "prod", "-t", "${_FRONTEND_IMAGE}", "./sourcecode/frontend"]
+    id: docker-build-frontend
+    waitFor: ['-']
 
   # Push the API image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_API_IMAGE}"]
+    waitFor:
+      - docker-build-api
 
   # Push the Frontend image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_FRONTEND_IMAGE}"]
+    waitFor:
+      - docker-build-frontend
 
   - name: gcr.io/cloud-builders/kubectl
     entrypoint: "/bin/bash"
