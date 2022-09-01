@@ -32,6 +32,7 @@ steps:
       - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
       - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
       - KUBECONFIG=/workspace/.kube/config
+    waitFor: ['-']
 
   - name: gcr.io/cloud-builders/kubectl
     args:
@@ -40,6 +41,7 @@ steps:
       - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
       - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
       - KUBECONFIG=/workspace/.kube/config
+    waitFor: ['-']
 
   # Deploy with Helm
   - name: gcr.io/my-second-brain-common/helm
