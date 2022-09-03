@@ -12,7 +12,7 @@ import { ManagedForm, ManagedTextField } from '../../../components/ManagedForm';
 import { Editor } from '../../../components/Editor';
 import ManagedFormControl from '../../../components/ManagedForm/ManagedFormControl';
 
-const EditNode = ({ values, setValue, onSubmit, error }) => {
+const EditNode = ({ initialValues, values, setValue, onSubmit, error }) => {
     return (
         <Container>
             <Grid container>
@@ -38,6 +38,10 @@ const EditNode = ({ values, setValue, onSubmit, error }) => {
                                     >
                                         {(hasErrors) => (
                                             <Editor
+                                                initialEditorState={
+                                                    initialValues &&
+                                                    initialValues.content
+                                                }
                                                 onChange={(editorState) =>
                                                     setValue(
                                                         'content',
@@ -49,7 +53,9 @@ const EditNode = ({ values, setValue, onSubmit, error }) => {
                                     </ManagedFormControl>
                                 </Box>
                                 <Box>
-                                    <Button onClick={onSubmit}>Create</Button>
+                                    <Button onClick={onSubmit}>
+                                        {initialValues ? 'Update' : 'Create'}
+                                    </Button>
                                 </Box>
                             </Stack>
                         </ManagedForm>

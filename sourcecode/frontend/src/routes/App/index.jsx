@@ -47,6 +47,10 @@ const Index = () => {
             element: <EditNode />,
         },
         {
+            path: '/nodes/:nodeId/edit',
+            element: <EditNode />,
+        },
+        {
             path: '/nodes/:nodeId',
             element: <Node />,
         },

@@ -32,7 +32,7 @@ const Nodes = ({ queryHookData, onUpdate }) => {
                 </Grid>
                 <Grid item xs={12}>
                     <Paper component={Box} p={2} mt={2}>
-                        <Table>
+                        <Table size={'small'}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>
@@ -40,9 +40,6 @@ const Nodes = ({ queryHookData, onUpdate }) => {
                                     </TableCell>
                                     <TableCell>
                                         <strong>Status</strong>
-                                    </TableCell>
-                                    <TableCell>
-                                        <strong>Actions</strong>
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
@@ -67,18 +64,6 @@ const Nodes = ({ queryHookData, onUpdate }) => {
                                                         </TableCell>
                                                         <TableCell>
                                                             {node.status}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Button
-                                                                variant="contained"
-                                                                onClick={() =>
-                                                                    onUpdate(
-                                                                        node
-                                                                    )
-                                                                }
-                                                            >
-                                                                Edit
-                                                            </Button>
                                                         </TableCell>
                                                     </TableRow>
                                                 ))}

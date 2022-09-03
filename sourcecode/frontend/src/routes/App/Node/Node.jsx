@@ -1,6 +1,7 @@
 import React from 'react';
 import {
     Box,
+    Button,
     Container,
     Grid,
     Paper,
@@ -12,9 +13,12 @@ import {
 } from '@mui/material';
 import { Editor } from '../../../components/Editor';
 import NoteModal from './NoteModal';
+import { useNavigate } from 'react-router-dom';
 
 const Node = ({ node, refetch }) => {
     const [selectedNoteToEdit, setSelectedNoteToEdit] = React.useState(null);
+    const navigate = useNavigate();
+
     return (
         <>
             <Container>
@@ -23,6 +27,13 @@ const Node = ({ node, refetch }) => {
                         <Paper component={Box} p={2} mt={2}>
                             <h1>{node.name}</h1>
                             <Editor initialEditorState={node.content} />
+                            <Button
+                                onClick={() =>
+                                    navigate('/app/nodes/' + node.id + '/edit')
+                                }
+                            >
+                                Edit
+                            </Button>
                         </Paper>
                     </Grid>
                     <Grid item xs={12}>
