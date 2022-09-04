@@ -13,7 +13,6 @@ const queryBuilder = knex({
         database: dbConfig.database,
         password: dbConfig.password,
         port: dbConfig.port,
-        socketPath: dbConfig.socketPath,
     },
     migrations: {
         directory: path.resolve('./src/migrations'),
