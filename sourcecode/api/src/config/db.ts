@@ -3,5 +3,5 @@ export default {
     user: process.env.CONFIG_DB_USER || 'postgres',
     password: process.env.CONFIG_DB_PASSWORD || 'thepgpassword',
     database: process.env.CONFIG_DB_DATABASE || 'mysecondbrain',
-    // port: 5432,
+    port: 5432,
 };
