@@ -23,59 +23,116 @@ steps:
     waitFor:
       - docker-build-frontend
 
-  - name: gcr.io/cloud-builders/kubectl
-    entrypoint: "/bin/bash"
+  # Add cloud proxy to container in order to be able to run migrations
+  - id: "docker-layer"
+    name: "gcr.io/cloud-builders/docker"
+    entrypoint: /bin/bash
     args:
-      - -c
-      - /builder/kubectl.bash -n web get configmap/$_HELM_CONFIG_NAME -o jsonpath="{.data.values}" > /workspace/values.yaml
-    env:
-      - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
-      - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
-      - KUBECONFIG=/workspace/.kube/config
-    waitFor: ['-']
+      - '-c'
+      - |
+        echo "FROM $_API_IMAGE
+        COPY --from=gcr.io/cloudsql-docker/gce-proxy /cloud_sql_proxy /cloudsql/cloud_sql_proxy" > Dockerfile-proxy;
 
-  - name: gcr.io/cloud-builders/kubectl
-    args:
-      - cluster-info
-    env:
-      - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
-      - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
-      - KUBECONFIG=/workspace/.kube/config
-    waitFor: ['-']
+        docker build -f Dockerfile-proxy -t migration-proxy .
+    waitFor:
+      - docker-build-api
 
-  # Deploy with Helm
-  - name: gcr.io/my-second-brain-common/helm
-    args:
-      - upgrade
-      - -i
-      - mysecondbrain
-      - ./chart
-      - --create-namespace
-      - -n
-      - web
-      - -f
-      - /workspace/values.yaml
-      - --set
-      - api.image=$_API_IMAGE
-      - --set
-      - frontend.image=$_FRONTEND_IMAGE
+
+  # Run the database migration
+  # For Unix Socket connections
+  - id: "migrate-socket"
+    name: "migration-proxy"
+    dir: /app
     env:
-      - KUBECONFIG=/workspace/.kube/config
-      - TILLER_NAMESPACE=kube-system
+      - "CONFIG_DB_DATABASE=${_CONFIG_DB_DATABASE}"
+      - "CONFIG_DB_USER=${_CONFIG_DB_USER}"
+      - "CONFIG_DB_PASSWORD=${_CONFIG_DB_PASSWORD}"
+      - "CONFIG_DB_SOCKET_PATH=${_CONFIG_DB_SOCKET_PATH}"
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        /cloudsql/cloud_sql_proxy -instances=${_INSTANCE_CONNECTION_NAME} -dir=/cloudsql & sleep 2;
+        pwd;
+        ls -l;
+        yarn migrate:prod;
+    waitFor:
+      - docker-layer
+
+
+  # Deploy container image to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "deploy",
+        "$_API_SERVICE_ID",
+        "--image",
+        "${_API_IMAGE}",
+        "--region",
+        "${_GCP_REGION}"
+      ]
+    waitFor:
+      - docker-build-api
+
+
+#  - name: gcr.io/cloud-builders/kubectl
+#    entrypoint: "/bin/bash"
+#    args:
+#      - -c
+#      - /builder/kubectl.bash -n web get configmap/$_HELM_CONFIG_NAME -o jsonpath="{.data.values}" > /workspace/values.yaml
+#    env:
+#      - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
+#      - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
+#      - KUBECONFIG=/workspace/.kube/config
+#    waitFor: ['-']
+#
+#  - name: gcr.io/cloud-builders/kubectl
+#    args:
+#      - cluster-info
+#    env:
+#      - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
+#      - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
+#      - KUBECONFIG=/workspace/.kube/config
+#    waitFor: ['-']
+#
+#  # Deploy with Helm
+#  - name: gcr.io/my-second-brain-common/helm
+#    args:
+#      - upgrade
+#      - -i
+#      - mysecondbrain
+#      - ./chart
+#      - --create-namespace
+#      - -n
+#      - web
+#      - -f
+#      - /workspace/values.yaml
+#      - --set
+#      - api.image=$_API_IMAGE
+#      - --set
+#      - frontend.image=$_FRONTEND_IMAGE
+#    env:
+#      - KUBECONFIG=/workspace/.kube/config
+#      - TILLER_NAMESPACE=kube-system
 
 images:
   - gcr.io/$PROJECT_ID/mysecondbrain-api:$COMMIT_SHA
   - gcr.io/$PROJECT_ID/mysecondbrain-frontend:$COMMIT_SHA
 
 substitutions:
+  _GCP_REGION: the-region
+
   _API_IMAGE: gcr.io/${PROJECT_ID}/mysecondbrain-api:${COMMIT_SHA}
   _FRONTEND_IMAGE: gcr.io/${PROJECT_ID}/mysecondbrain-frontend:${COMMIT_SHA}
 
-  _GCP_REGION: the-region
-  _GKE_CLUSTER: name-of-gke-cluster
+  _API_SERVICE_ID: id
 
-  _HELM_CONFIG_NAME: the-name-of-the-helm-configmap
-  _HELM_NAMESPACE: the-name-of-the-helm-namespace
+#  _GKE_CLUSTER: name-of-gke-cluster
+#
+#  _HELM_CONFIG_NAME: the-name-of-the-helm-configmap
+#  _HELM_NAMESPACE: the-name-of-the-helm-namespace
 
 #  Following variables are for doing the database migration
   _CONFIG_DB_DATABASE: database
