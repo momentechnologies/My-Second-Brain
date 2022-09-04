@@ -14,12 +14,14 @@ steps:
   # Push the API image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_API_IMAGE}"]
+    id: docker-push-api
     waitFor:
       - docker-build-api
 
   # Push the Frontend image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_FRONTEND_IMAGE}"]
+    id: docker-push-frontend
     waitFor:
       - docker-build-frontend
 
@@ -60,7 +62,6 @@ steps:
     waitFor:
       - docker-layer
 
-
   # Deploy container image to Cloud Run
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
@@ -75,48 +76,23 @@ steps:
         "${_GCP_REGION}"
       ]
     waitFor:
-      - docker-build-api
+      - docker-push-api
 
-
-#  - name: gcr.io/cloud-builders/kubectl
-#    entrypoint: "/bin/bash"
-#    args:
-#      - -c
-#      - /builder/kubectl.bash -n web get configmap/$_HELM_CONFIG_NAME -o jsonpath="{.data.values}" > /workspace/values.yaml
-#    env:
-#      - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
-#      - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
-#      - KUBECONFIG=/workspace/.kube/config
-#    waitFor: ['-']
-#
-#  - name: gcr.io/cloud-builders/kubectl
-#    args:
-#      - cluster-info
-#    env:
-#      - CLOUDSDK_COMPUTE_REGION=$_GCP_REGION
-#      - CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER
-#      - KUBECONFIG=/workspace/.kube/config
-#    waitFor: ['-']
-#
-#  # Deploy with Helm
-#  - name: gcr.io/my-second-brain-common/helm
-#    args:
-#      - upgrade
-#      - -i
-#      - mysecondbrain
-#      - ./chart
-#      - --create-namespace
-#      - -n
-#      - web
-#      - -f
-#      - /workspace/values.yaml
-#      - --set
-#      - api.image=$_API_IMAGE
-#      - --set
-#      - frontend.image=$_FRONTEND_IMAGE
-#    env:
-#      - KUBECONFIG=/workspace/.kube/config
-#      - TILLER_NAMESPACE=kube-system
+  # Deploy container image to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "deploy",
+        "$_FRONTEND_SERVICE_ID",
+        "--image",
+        "${_FRONTEND_IMAGE}",
+        "--region",
+        "${_GCP_REGION}"
+      ]
+    waitFor:
+      - docker-push-frontend
 
 images:
   - gcr.io/$PROJECT_ID/mysecondbrain-api:$COMMIT_SHA
@@ -129,13 +105,8 @@ substitutions:
   _FRONTEND_IMAGE: gcr.io/${PROJECT_ID}/mysecondbrain-frontend:${COMMIT_SHA}
 
   _API_SERVICE_ID: id
+  _FRONTEND_SERVICE_ID: id
 
-#  _GKE_CLUSTER: name-of-gke-cluster
-#
-#  _HELM_CONFIG_NAME: the-name-of-the-helm-configmap
-#  _HELM_NAMESPACE: the-name-of-the-helm-namespace
-
-#  Following variables are for doing the database migration
   _CONFIG_DB_DATABASE: database
   _CONFIG_DB_USER: user
   _CONFIG_DB_PASSWORD: password
