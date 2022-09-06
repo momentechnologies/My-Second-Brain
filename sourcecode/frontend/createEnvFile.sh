@@ -1,8 +1,11 @@
 #!/bin/bash
 
-envKeysForFrontend=("REACT_APP_API_URL")
+envKeysForFrontend=(
+  "REACT_APP_API_URL"
+  "REACT_APP_STRIPE_PUBLIC_KEY"
+)
 
-folder=${1:-"./build"}
+folder=${1:-"./public"}
 filePath=$folder"/env-config.js"
 
 echo "updating $filePath with current environment variables"

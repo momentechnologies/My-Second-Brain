@@ -22,6 +22,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
 
 FROM base_node as dev
+RUN apk add bash
 WORKDIR /app
 EXPOSE 3000
-CMD yarn; yarn start
+CMD ./createEnvFile.sh; yarn; yarn start

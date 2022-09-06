@@ -1,4 +1,5 @@
 /.idea
+/public/env-config.js
 
 # dependencies
 /node_modules

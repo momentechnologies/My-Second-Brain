@@ -63,7 +63,7 @@ const Header = () => {
                 </Typography>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                     <Button
-                        onClick={() => navigate('/signup')}
+                        onClick={() => navigate('/auth/signup')}
                         sx={{ my: 2, display: 'block' }}
                     >
                         Start for free

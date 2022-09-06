@@ -8,6 +8,7 @@ import * as auth from './auth';
 import * as externalTypes from './externalTypes';
 import * as node from './node';
 import * as note from './note';
+import * as payment from './payment';
 import * as project from './project';
 import * as task from './task';
 import * as user from './user';
@@ -33,6 +34,7 @@ export default directives.decorate(
             externalTypes,
             node,
             note,
+            payment,
             project,
             task,
             user,

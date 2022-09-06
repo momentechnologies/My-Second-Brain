@@ -14,10 +14,6 @@ export const authenticatedRoutes = [
         element: <App />,
     },
     {
-        path: '/auth/confirm-email',
-        element: <ConfirmEmail />,
-    },
-    {
         path: '*',
         element: <Navigate to="/app" replace />,
     },
@@ -44,6 +40,7 @@ export const notAuthenticatedRoutes = [
 
 const AuthenticatedRoutes = () => {
     const routes = useRoutes(authenticatedRoutes);
+
     return <>{routes}</>;
 };
 
@@ -58,13 +55,22 @@ const NotAuthenticatedRoutes = () => {
 };
 
 const Routes = () => {
-    const { isAuthenticated } = React.useContext(AuthContext);
+    const { isAuthenticated, user } = React.useContext(AuthContext);
 
-    if (isAuthenticated) {
-        return <AuthenticatedRoutes />;
+    if (!isAuthenticated) {
+        return <NotAuthenticatedRoutes />;
     }
 
-    return <NotAuthenticatedRoutes />;
+    if (!user.emailConfirmed) {
+        return (
+            <>
+                <Header />
+                <ConfirmEmail />
+            </>
+        );
+    }
+
+    return <AuthenticatedRoutes />;
 };
 
 export default Routes;

@@ -87,6 +87,8 @@ services:
       target: dev
     environment:
       PORT: "443"
+      REACT_APP_STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
+      REACT_APP_API_URL: "https://api.mysecondbrain.test"
     healthcheck:
       test: [CMD, curl, -f, http://localhost]
     volumes:
@@ -95,3 +97,4 @@ services:
       - ./sourcecode/frontend/public:/app/public
       - ./sourcecode/frontend/package.json:/app/package.json
       - ./sourcecode/frontend/yarn.lock:/app/yarn.lock
+      - ./sourcecode/frontend/createEnvFile.sh:/app/createEnvFile.sh

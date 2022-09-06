@@ -1,3 +1,5 @@
 /.idea
 /data
 /sourcecode/api/emails
+
+/.env

@@ -1,4 +1,4 @@
-export default {
+const appConfig = {
     isProd: process.env.NODE_ENV === 'production',
     isTest: process.env.NODE_ENV === 'test',
     url: process.env.CONFIG_APP_URL,
@@ -8,3 +8,5 @@ export default {
     sentryUrl: process.env.CONFIG_SENTRY_URL,
     bvMillToken: process.env.CONFIG_BV_MILL_TOKEN,
 };
+
+export default appConfig;

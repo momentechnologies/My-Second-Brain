@@ -10,6 +10,7 @@ export const schema = gql`
     type User {
         id: Int!
         email: String!
+        emailConfirmed: Boolean!
         firstName: String
         lastName: String
     }
