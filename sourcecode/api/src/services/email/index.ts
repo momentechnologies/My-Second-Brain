@@ -7,6 +7,7 @@ import Handlebars from 'handlebars';
 import __dirname from './dirname.cjs';
 import { addLinkTrackingToUrl } from '../linkService';
 import { Context } from '../../context';
+import emailConfig from '../../config/email';
 
 const partials = fs.readdirSync(path.join(__dirname, 'templates/partials'));
 
@@ -105,13 +106,13 @@ const send = async (
         tos = to;
     }
 
-    if (process.env.NODE_ENV === 'production') {
+    if (appConfig.isProd) {
         return sendgrid.send(
             tos.map((to) => ({
                 to,
                 from: {
-                    email: 'no-reply@mysecondbrain.ai',
-                    name: 'My Second Brain',
+                    email: emailConfig.fromInfo.email,
+                    name: emailConfig.fromInfo.name,
                 },
                 subject,
                 text,
