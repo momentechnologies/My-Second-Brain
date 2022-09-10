@@ -110,8 +110,8 @@ const send = async (
             tos.map((to) => ({
                 to,
                 from: {
-                    email: 'support@dronehandelen.no',
-                    name: 'Dronehandelen',
+                    email: 'no-reply@mysecondbrain.ai',
+                    name: 'My Second Brain',
                 },
                 subject,
                 text,
