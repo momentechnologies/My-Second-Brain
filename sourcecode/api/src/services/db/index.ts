@@ -3,3 +3,4 @@ import * as _repositoryHelpers from './repositoryHelpers';
 
 export const repositoryHelpers = _repositoryHelpers;
 export default connection;
+export * from './helpers';

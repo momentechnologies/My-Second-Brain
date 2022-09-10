@@ -11,6 +11,7 @@ import Node from './Node';
 import Project from './Project';
 import EditNote from './EditNote';
 import MyDay from './MyDay';
+import Page from '../../components/Page';
 
 const Index = () => {
     const routes = useRoutes([
@@ -64,12 +65,7 @@ const Index = () => {
         },
     ]);
 
-    return (
-        <>
-            <AppHeader />
-            {routes}
-        </>
-    );
+    return <Page>{routes}</Page>;
 };
 
 export default Index;

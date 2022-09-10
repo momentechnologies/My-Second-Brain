@@ -7,17 +7,8 @@ import Home from './Home';
 import Signup from './Signup';
 import ConfirmEmail from './Auth/ConfirmEmail';
 import App from './App';
-
-export const authenticatedRoutes = [
-    {
-        path: '/app/*',
-        element: <App />,
-    },
-    {
-        path: '*',
-        element: <Navigate to="/app" replace />,
-    },
-];
+import AppHeader from '../components/AppHeader';
+import SetupSubscription from './SetupSubscription';
 
 export const notAuthenticatedRoutes = [
     {
@@ -33,13 +24,26 @@ export const notAuthenticatedRoutes = [
         element: <Login />,
     },
     {
+        path: '/auth/confirm-email',
+        element: <ConfirmEmail />,
+    },
+    {
         path: '*',
         element: <Navigate to="/auth/login" replace />,
     },
 ];
 
 const AuthenticatedRoutes = () => {
-    const routes = useRoutes(authenticatedRoutes);
+    const routes = useRoutes([
+        {
+            path: '/app/*',
+            element: <App />,
+        },
+        {
+            path: '*',
+            element: <Navigate to={'/app'} replace />,
+        },
+    ]);
 
     return <>{routes}</>;
 };
@@ -54,6 +58,26 @@ const NotAuthenticatedRoutes = () => {
     );
 };
 
+const SubscriptionRequiredRoutes = () => {
+    const routes = useRoutes([
+        {
+            path: '/auth/create-subscription',
+            element: (
+                <>
+                    <AppHeader />
+                    <SetupSubscription />
+                </>
+            ),
+        },
+        {
+            path: '*',
+            element: <Navigate to={'/auth/create-subscription'} replace />,
+        },
+    ]);
+
+    return <>{routes}</>;
+};
+
 const Routes = () => {
     const { isAuthenticated, user } = React.useContext(AuthContext);
 
@@ -64,10 +88,14 @@ const Routes = () => {
     if (!user.emailConfirmed) {
         return (
             <>
-                <Header />
+                <AppHeader />
                 <ConfirmEmail />
             </>
         );
+    }
+
+    if (!user.hasSubscription) {
+        return <SubscriptionRequiredRoutes />;
     }
 
     return <AuthenticatedRoutes />;

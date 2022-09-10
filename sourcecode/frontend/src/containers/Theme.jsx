@@ -5,23 +5,38 @@ const Theme = ({ children }) => {
     const theme = createTheme({
         palette: {
             primary: {
-                main: '#ff9a46',
-                dark: '#ff9a46',
+                main: '#024059',
+                dark: '#024059',
             },
             secondary: {
-                main: '#82E066',
-                dark: '#1D7105',
+                main: '#84C1D9',
+                dark: '#84C1D9',
+            },
+            tertiary: {
+                main: '#02731E',
+                dark: '#02731E',
+                contrastText: '#fff',
+            },
+            quaternary: {
+                main: '#014011',
+                dark: '#014011',
+            },
+            quinary: {
+                main: '#A65E44',
+                dark: '#A65E44',
             },
         },
         components: {
             MuiButton: {
                 defaultProps: {
                     variant: 'contained',
+                    color: 'tertiary',
                 },
             },
             MuiLoadingButton: {
                 defaultProps: {
                     variant: 'contained',
+                    color: 'tertiary',
                 },
             },
         },

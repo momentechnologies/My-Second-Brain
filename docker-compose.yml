@@ -76,6 +76,8 @@ services:
       CONFIG_DB_PASSWORD: "thepgpassword"
       PUBSUB_EMULATOR_HOST: pubsub:8538
       CONFIG_APP_URL: https://mysecondbrain.test
+      STRIPE_PRIVATE_KEY: ${STRIPE_PRIVATE_KEY}
+      STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
     volumes:
       - ./sourcecode/api:/app
       - mysecondbrain_api_nodemodules:/app/node_modules

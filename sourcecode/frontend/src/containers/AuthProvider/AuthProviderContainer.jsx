@@ -13,6 +13,7 @@ export const authFragment = gql`
                 lastName
                 email
                 emailConfirmed
+                hasSubscription
             }
         }
     }
