@@ -9,6 +9,7 @@ type User = {
     password: string;
     email: string;
     emailConfirmed: boolean;
+    stripeCustomerId?: string;
 };
 
 export default (db) => {

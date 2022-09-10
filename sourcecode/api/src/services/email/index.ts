@@ -7,6 +7,7 @@ import Handlebars from 'handlebars';
 import __dirname from './dirname.cjs';
 import { addLinkTrackingToUrl } from '../linkService';
 import { Context } from '../../context';
+import emailConfig from '../../config/email';
 
 const partials = fs.readdirSync(path.join(__dirname, 'templates/partials'));
 
@@ -105,13 +106,13 @@ const send = async (
         tos = to;
     }
 
-    if (process.env.NODE_ENV === 'production') {
+    if (appConfig.isProd) {
         return sendgrid.send(
             tos.map((to) => ({
                 to,
                 from: {
-                    email: 'support@dronehandelen.no',
-                    name: 'Dronehandelen',
+                    email: emailConfig.fromInfo.email,
+                    name: emailConfig.fromInfo.name,
                 },
                 subject,
                 text,
@@ -138,8 +139,8 @@ const getHtml = async (template, data) => {
 const sendConfirmationEmail = async (context: Context, email, token) => {
     return await send(
         context,
-        `Bekreft e-posten din`,
-        `Velkommen til Dronehandelen.no! Vennligst bekreft e-posten din for å bruke kontoen din.`,
+        `Confirm your email`,
+        `Welcome to My Second brain! Please confirm your email to use your account.`,
         'confirmEmail',
         {
             token,
@@ -151,8 +152,8 @@ const sendConfirmationEmail = async (context: Context, email, token) => {
 export const sendResetPasswordEmail = async (context, email, token) => {
     return await send(
         context,
-        `Nullstill passord`,
-        `Nullstill passord`,
+        `Reset password`,
+        `Reset password`,
         'resetPassword',
         {
             __link__resetUrl: `${appConfig.url}/reset-password?token=${token}`,

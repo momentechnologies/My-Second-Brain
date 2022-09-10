@@ -11,8 +11,10 @@ export const schema = gql`
         id: Int!
         email: String!
         emailConfirmed: Boolean!
+        hasSubscription: Boolean!
         firstName: String
         lastName: String
+        stripeCustomerId: String
     }
 `;
 
@@ -29,5 +31,11 @@ export const resolvers = {
                 user,
             };
         },
+    },
+    User: {
+        hasSubscription: async ({ id }, args, context: Context) =>
+            !!(await context
+                .db()
+                .subscription.getActiveByUserId.load(context.user.id)),
     },
 };

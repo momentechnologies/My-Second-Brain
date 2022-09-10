@@ -66,7 +66,7 @@ const Header = () => {
                         onClick={() => navigate('/auth/signup')}
                         sx={{ my: 2, display: 'block' }}
                     >
-                        Start for free
+                        Start free 14 days trial
                     </Button>
                 </Box>
             </Toolbar>
