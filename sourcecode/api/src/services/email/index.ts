@@ -139,8 +139,8 @@ const getHtml = async (template, data) => {
 const sendConfirmationEmail = async (context: Context, email, token) => {
     return await send(
         context,
-        `Bekreft e-posten din`,
-        `Velkommen til Dronehandelen.no! Vennligst bekreft e-posten din for å bruke kontoen din.`,
+        `Confirm your email`,
+        `Welcome to My Second brain! Please confirm your email to use your account.`,
         'confirmEmail',
         {
             token,
@@ -152,8 +152,8 @@ const sendConfirmationEmail = async (context: Context, email, token) => {
 export const sendResetPasswordEmail = async (context, email, token) => {
     return await send(
         context,
-        `Nullstill passord`,
-        `Nullstill passord`,
+        `Reset password`,
+        `Reset password`,
         'resetPassword',
         {
             __link__resetUrl: `${appConfig.url}/reset-password?token=${token}`,
