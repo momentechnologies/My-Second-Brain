@@ -9,6 +9,7 @@ import ConfirmEmail from './Auth/ConfirmEmail';
 import App from './App';
 import AppHeader from '../components/AppHeader';
 import SetupSubscription from './SetupSubscription';
+import Page from '../components/Page';
 
 export const notAuthenticatedRoutes = [
     {
@@ -63,10 +64,9 @@ const SubscriptionRequiredRoutes = () => {
         {
             path: '/auth/create-subscription',
             element: (
-                <>
-                    <AppHeader />
+                <Page>
                     <SetupSubscription />
-                </>
+                </Page>
             ),
         },
         {
@@ -87,10 +87,9 @@ const Routes = () => {
 
     if (!user.emailConfirmed) {
         return (
-            <>
-                <AppHeader />
+            <Page>
                 <ConfirmEmail />
-            </>
+            </Page>
         );
     }
 

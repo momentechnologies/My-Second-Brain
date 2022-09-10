@@ -14,7 +14,7 @@ import LoadBillingButton from './LoadBillingButton';
 import { Logout as LogoutIcon } from '@mui/icons-material';
 
 const MyAccountPopover = () => {
-    const { user } = React.useContext(AuthContext);
+    const { user, logout } = React.useContext(AuthContext);
 
     return (
         <Paper>
@@ -35,8 +35,10 @@ const MyAccountPopover = () => {
                         <ListSubheader component="div">Account</ListSubheader>
                     }
                 >
-                    <LoadBillingButton />
-                    <ListItemButton>
+                    {user.emailConfirmed && user.hasSubscription && (
+                        <LoadBillingButton />
+                    )}
+                    <ListItemButton onClick={() => logout()}>
                         <ListItemIcon>
                             <LogoutIcon />
                         </ListItemIcon>

@@ -78,6 +78,7 @@ services:
       CONFIG_APP_URL: https://mysecondbrain.test
       STRIPE_PRIVATE_KEY: ${STRIPE_PRIVATE_KEY}
       STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
+      STRIPE_SUBSCRIPTION_PRICE_ID: ${STRIPE_SUBSCRIPTION_PRICE_ID}
     volumes:
       - ./sourcecode/api:/app
       - mysecondbrain_api_nodemodules:/app/node_modules
