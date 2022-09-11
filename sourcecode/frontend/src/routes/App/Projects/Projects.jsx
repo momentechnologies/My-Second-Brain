@@ -5,6 +5,7 @@ import {
     Container,
     Grid,
     Paper,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -13,88 +14,80 @@ import {
 } from '@mui/material';
 import DefaultHookQuery from '../../../components/DefaultHookQuery';
 import { useNavigate } from 'react-router-dom';
+import { PageContent } from '../../../components/Page';
 
-const Projects = ({ queryHookData, onCreateNew, onUpdate }) => {
+const Projects = ({ queryHookData, onCreateNew }) => {
     const navigate = useNavigate();
 
     return (
-        <Container>
+        <PageContent title={'Projects'}>
             <Grid container>
                 <Grid item xs={12}>
                     <Paper component={Box} p={2} mt={2}>
-                        <Button
-                            variant="contained"
-                            onClick={() => onCreateNew()}
-                        >
-                            New Project
-                        </Button>
-                    </Paper>
-                </Grid>
-                <Grid item xs={12}>
-                    <Paper component={Box} p={2} mt={2}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Name</strong>
-                                    </TableCell>
-                                    <TableCell>
-                                        <strong>Status</strong>
-                                    </TableCell>
-                                    <TableCell>
-                                        <strong>Actions</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <DefaultHookQuery queryHookData={queryHookData}>
-                                    {({ data, refetch }) => {
-                                        return (
-                                            <>
-                                                {data.projects.map(
-                                                    (project) => (
-                                                        <TableRow
-                                                            key={project.id}
-                                                            hover
-                                                            onClick={() =>
-                                                                navigate(
-                                                                    String(
-                                                                        project.id
-                                                                    )
-                                                                )
-                                                            }
-                                                        >
-                                                            <TableCell>
-                                                                {project.name}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                {project.status}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <Button
-                                                                    variant="contained"
-                                                                    onClick={() =>
-                                                                        onUpdate(
-                                                                            project
+                        <Stack spacing={1}>
+                            <Box>
+                                <Button
+                                    variant="contained"
+                                    onClick={() => onCreateNew()}
+                                >
+                                    New Project
+                                </Button>
+                            </Box>
+                            <Table size={'small'}>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>
+                                            <strong>Name</strong>
+                                        </TableCell>
+                                        <TableCell>
+                                            <strong>Status</strong>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <DefaultHookQuery
+                                        queryHookData={queryHookData}
+                                    >
+                                        {({ data, refetch }) => {
+                                            return (
+                                                <>
+                                                    {data.projects.map(
+                                                        (project) => (
+                                                            <TableRow
+                                                                key={project.id}
+                                                                hover
+                                                                onClick={() =>
+                                                                    navigate(
+                                                                        String(
+                                                                            project.id
                                                                         )
+                                                                    )
+                                                                }
+                                                            >
+                                                                <TableCell>
+                                                                    {
+                                                                        project.name
                                                                     }
-                                                                >
-                                                                    Edit
-                                                                </Button>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    )
-                                                )}
-                                            </>
-                                        );
-                                    }}
-                                </DefaultHookQuery>
-                            </TableBody>
-                        </Table>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {
+                                                                        project.status
+                                                                    }
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        )
+                                                    )}
+                                                </>
+                                            );
+                                        }}
+                                    </DefaultHookQuery>
+                                </TableBody>
+                            </Table>
+                        </Stack>
                     </Paper>
                 </Grid>
             </Grid>
-        </Container>
+        </PageContent>
     );
 };
 

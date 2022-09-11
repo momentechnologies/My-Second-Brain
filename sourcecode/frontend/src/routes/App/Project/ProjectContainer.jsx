@@ -25,13 +25,14 @@ const ProjectContainer = () => {
     return (
         <DefaultHookQuery
             queryHookData={useQuery(getProjectQuery, {
+                fetchPolicy: 'network-only',
                 variables: {
                     id: parseInt(projectId),
                 },
             })}
         >
             {({ data, refetch }) => {
-                return <Project project={data.project} />;
+                return <Project project={data.project} refetch={refetch} />;
             }}
         </DefaultHookQuery>
     );

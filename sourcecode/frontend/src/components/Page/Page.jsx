@@ -45,17 +45,6 @@ const _links = (iconSize = 'medium', color = 'primary.contrastText') => [
         ),
     },
     {
-        to: '/app/process',
-        icon: (
-            <ReceiptLongIcon
-                fontSize={iconSize}
-                sx={{
-                    color,
-                }}
-            />
-        ),
-    },
-    {
         to: '/app/nodes',
         icon: (
             <FolderIcon

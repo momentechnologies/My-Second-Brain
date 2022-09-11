@@ -7,7 +7,7 @@ import { graphqlUpdateDataBuilder } from '../../services/db/graphqlUpdateDataBui
 
 export const schema = gql`
     type Mutation {
-        createQuickTask(name: String!): Task @auth
+        createTask(data: CreateTaskInput!): Task @auth
         updateTask(id: Int!, data: UpdateTaskInput!): Task @auth
         deleteTask(taskId: Int!): Boolean @auth
     }
@@ -21,6 +21,15 @@ export const schema = gql`
         showIsDone: Boolean = false
         context: String
         dueBefore: DateTime
+    }
+
+    input CreateTaskInput {
+        name: String!
+        projectId: Int
+        context: String
+        dueAt: DateTime
+        isDone: Boolean
+        isArchived: Boolean
     }
 
     input UpdateTaskInput {
@@ -48,17 +57,42 @@ export const schema = gql`
 
 export const resolvers = {
     Mutation: {
-        createQuickTask: async (_, args, context: Context) => {
-            const { name } = validateJoi(
-                args,
+        createTask: async (_, { data }, context: Context) => {
+            const parsedData: {
+                name: string;
+                projectId?: number;
+            } = validateJoi(
+                data,
                 Joi.object().keys({
                     name: Joi.string().min(1).required(),
+                    projectId: Joi.number().min(1).allow(null).optional(),
                 })
             );
 
+            const optionalDataToSet = await graphqlUpdateDataBuilder(
+                parsedData,
+                {
+                    projectId: async (projectId) => {
+                        if (!projectId) {
+                            return null;
+                        }
+                        const project = await context
+                            .db()
+                            .project.getById.load(projectId);
+
+                        if (!project || project.userId !== context.user.id) {
+                            throw new NotFoundException('project');
+                        }
+
+                        return project.id;
+                    },
+                }
+            );
+
             return await context.db().task.create({
-                name,
+                ...optionalDataToSet,
                 userId: context.user.id,
+                name: parsedData.name,
                 isDone: false,
                 isArchived: false,
             });
