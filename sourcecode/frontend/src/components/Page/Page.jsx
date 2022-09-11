@@ -3,12 +3,12 @@ import { Box, IconButton, Stack } from '@mui/material';
 import {
     Inbox as InboxIcon,
     Folder as FolderIcon,
-    ReceiptLong as ReceiptLongIcon,
     AddTask as AddTaskIcon,
     Today as TodayIcon,
 } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import MyAccountButton from './MyAccountButton';
+import { LogoWhite } from '../CustomIcons';
 
 const _links = (iconSize = 'medium', color = 'primary.contrastText') => [
     {
@@ -82,7 +82,7 @@ const Page = ({ children }) => {
                         }}
                         pb={3}
                     >
-                        MSB
+                        <LogoWhite />
                     </Stack>
                     {links.map((link, index) => (
                         <Stack
