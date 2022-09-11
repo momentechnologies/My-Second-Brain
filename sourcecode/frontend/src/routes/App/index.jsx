@@ -17,7 +17,7 @@ const Index = () => {
     const routes = useRoutes([
         {
             path: '/',
-            element: <Dashboard />,
+            element: <Process />,
         },
         {
             path: '/projects',
@@ -26,10 +26,6 @@ const Index = () => {
         {
             path: '/projects/:projectId',
             element: <Project />,
-        },
-        {
-            path: '/process',
-            element: <Process />,
         },
         {
             path: '/notes',

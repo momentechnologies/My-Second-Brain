@@ -22,26 +22,19 @@ const getProjectQuery = gql`
 
 const MyDayContainer = () => {
     const [selectedTab, setSelectedTab] = React.useState(0);
+    const queryHookData = useQuery(getProjectQuery, {
+        fetchPolicy: 'network-only',
+        variables: {
+            filters: tabs[selectedTab].filters,
+        },
+    });
 
     return (
-        <DefaultHookQuery
-            queryHookData={useQuery(getProjectQuery, {
-                fetchPolicy: 'network-only',
-                variables: {
-                    filters: tabs[selectedTab].filters,
-                },
-            })}
-        >
-            {({ data, refetch }) => {
-                return (
-                    <MyDay
-                        tasks={data.tasks}
-                        selectedTab={selectedTab}
-                        setSelectedTab={setSelectedTab}
-                    />
-                );
-            }}
-        </DefaultHookQuery>
+        <MyDay
+            queryHookData={queryHookData}
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+        />
     );
 };
 

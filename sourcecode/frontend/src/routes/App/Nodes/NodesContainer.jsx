@@ -12,7 +12,9 @@ const getNodesQuery = gql`
 `;
 
 const NodesContainer = () => {
-    const queryHookData = useQuery(getNodesQuery);
+    const queryHookData = useQuery(getNodesQuery, {
+        fetchPolicy: 'network-only',
+    });
 
     return <Nodes queryHookData={queryHookData} />;
 };

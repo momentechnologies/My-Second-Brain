@@ -1,1 +1,1 @@
-export { default } from './ProcessContainer';
+export { default } from './Process';

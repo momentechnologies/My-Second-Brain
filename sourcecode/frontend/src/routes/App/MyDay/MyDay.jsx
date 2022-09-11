@@ -16,6 +16,8 @@ import {
 import TaskRow from './TaskRow';
 import { Calendar } from '../../../components/Calendar';
 import TaskEditModal from '../../../components/TaskEditModal';
+import { PageContent } from '../../../components/Page';
+import DefaultHookQuery from '../../../components/DefaultHookQuery';
 
 export const tabs = [
     {
@@ -45,68 +47,60 @@ export const tabs = [
     },
 ];
 
-const MyDay = ({ tasks, selectedTab, setSelectedTab }) => {
+const MyDay = ({ queryHookData, selectedTab, setSelectedTab }) => {
     const tabInfo = tabs[selectedTab];
     const [selectedTaskToEdit, setSelectedTaskToEdit] = React.useState(null);
 
     return (
-        <>
-            <Container>
-                <Grid container>
-                    <Grid item xs={12}>
-                        <Paper component={Box} p={2} mt={2}>
-                            <h1>My day</h1>
-                            <Calendar />
-                        </Paper>
-                        <Paper component={Box} p={2} mt={2}>
-                            <h2>Tasks</h2>
-                            <Box mb={2}>
-                                <Tabs
-                                    value={selectedTab}
-                                    onChange={(e, index) =>
-                                        setSelectedTab(index)
-                                    }
-                                >
-                                    {tabs.map((tab, index) => (
-                                        <Tab label={tab.name} key={index} />
-                                    ))}
-                                </Tabs>
-                            </Box>
-                            <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell variant="head">
-                                            Task
-                                        </TableCell>
-                                        <TableCell variant="head">
-                                            Project
-                                        </TableCell>
-                                        <TableCell variant="head">
-                                            Due at
-                                        </TableCell>
-                                        <TableCell />
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {(tabInfo.order
-                                        ? tabInfo.order(tasks)
-                                        : tasks
-                                    ).map((task) => (
-                                        <TaskRow
-                                            key={task.id}
-                                            task={task}
-                                            startValueIsDone={task.isDone}
-                                            onClick={() =>
-                                                setSelectedTaskToEdit(task)
-                                            }
-                                        />
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </Paper>
-                    </Grid>
+        <PageContent title={'My day'}>
+            <Grid container>
+                <Grid item xs={12}>
+                    <Paper component={Box} p={2} mt={2}>
+                        <h2>Tasks</h2>
+                        <Box mb={2}>
+                            <Tabs
+                                value={selectedTab}
+                                onChange={(e, index) => setSelectedTab(index)}
+                            >
+                                {tabs.map((tab, index) => (
+                                    <Tab label={tab.name} key={index} />
+                                ))}
+                            </Tabs>
+                        </Box>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell variant="head">Task</TableCell>
+                                    <TableCell variant="head">
+                                        Project
+                                    </TableCell>
+                                    <TableCell variant="head">Due at</TableCell>
+                                    <TableCell />
+                                </TableRow>
+                            </TableHead>
+                            <DefaultHookQuery queryHookData={queryHookData}>
+                                {({ data, refetch }) => (
+                                    <TableBody>
+                                        {(tabInfo.order
+                                            ? tabInfo.order(data.tasks)
+                                            : data.tasks
+                                        ).map((task) => (
+                                            <TaskRow
+                                                key={task.id}
+                                                task={task}
+                                                startValueIsDone={task.isDone}
+                                                onClick={() =>
+                                                    setSelectedTaskToEdit(task)
+                                                }
+                                            />
+                                        ))}
+                                    </TableBody>
+                                )}
+                            </DefaultHookQuery>
+                        </Table>
+                    </Paper>
                 </Grid>
-            </Container>
+            </Grid>
             <TaskEditModal
                 task={selectedTaskToEdit}
                 onClose={() => setSelectedTaskToEdit(null)}
@@ -117,7 +111,7 @@ const MyDay = ({ tasks, selectedTab, setSelectedTab }) => {
                     });
                 }}
             />
-        </>
+        </PageContent>
     );
 };
 
