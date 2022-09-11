@@ -74,7 +74,9 @@ const ProcessTasks = () => {
                         </DefaultHookQuery>
                         <TableRow>
                             <TableCell>
-                                <CreateTaskContainer>
+                                <CreateTaskContainer
+                                    onCreated={() => queryHookData.refetch()}
+                                >
                                     {({ setValue, values }) => (
                                         <ManagedTextField
                                             inputKey="name"
