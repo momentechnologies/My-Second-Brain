@@ -79,6 +79,7 @@ services:
       STRIPE_PRIVATE_KEY: ${STRIPE_PRIVATE_KEY}
       STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
       STRIPE_SUBSCRIPTION_PRICE_ID: ${STRIPE_SUBSCRIPTION_PRICE_ID}
+      STRIPE_ENDPOINT_SECRET: ${STRIPE_ENDPOINT_SECRET}
     volumes:
       - ./sourcecode/api:/app
       - mysecondbrain_api_nodemodules:/app/node_modules

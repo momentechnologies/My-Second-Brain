@@ -1,7 +1,9 @@
 import gql from 'graphql-tag';
 import * as DateFns from 'date-fns';
 import { Context } from '../../context';
-import stripe from '../../services/stripe';
+import stripe, {
+    stripeSubscriptionToDbSubscription,
+} from '../../services/stripe';
 import stripeConfig from '../../config/stripe';
 import appConfig from '../../config/app';
 import ClientException from '../../exceptions/client';
@@ -41,18 +43,8 @@ export const resolvers = {
 
             try {
                 await context.db().subscription.create({
-                    stripeSubscriptionId: session.subscription.id,
-                    trialEndsAt: DateFns.fromUnixTime(
-                        session.subscription.trial_end
-                    ),
+                    ...stripeSubscriptionToDbSubscription(session.subscription),
                     userId: user.id,
-                    startsAt: DateFns.fromUnixTime(
-                        session.subscription.start_date
-                    ),
-                    nextRenewalAt: DateFns.fromUnixTime(
-                        session.subscription.trial_end
-                    ),
-                    status: session.subscription.status,
                 });
             } catch (e) {
                 if (!isUniqueError(e)) {

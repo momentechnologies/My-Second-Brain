@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import DataLoader from 'dataloader';
 
-type DefaultFields = {
+export type DefaultFields = {
     id: number;
     createdAt: Date;
     updatedAt: Date;

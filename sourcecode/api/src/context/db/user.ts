@@ -1,9 +1,11 @@
 import DataLoader from 'dataloader';
 import { repositoryHelpers } from '../../services/db';
+import { Knex } from 'knex';
+import { DefaultFields } from '../../services/db/repositoryHelpers';
 
 const tableName = 'users';
 
-type User = {
+type UserWithoutId = {
     firstName?: string;
     lastName?: string;
     password: string;
@@ -12,7 +14,9 @@ type User = {
     stripeCustomerId?: string;
 };
 
-export default (db) => {
+export interface User extends DefaultFields, UserWithoutId {}
+
+export default (db: Knex) => {
     const getByEmail = () =>
         new DataLoader(async (emails: string[]) => {
             const users = await db(tableName).whereIn('email', emails);
@@ -23,7 +27,24 @@ export default (db) => {
         });
 
     return {
-        ...repositoryHelpers.setupDefaultRepository<User>(tableName, db),
+        ...repositoryHelpers.setupDefaultRepository<UserWithoutId, User>(
+            tableName,
+            db
+        ),
         getByEmail: getByEmail(),
+        getByStripeCustomerId: new DataLoader(
+            async (stripeCustomerIds: string[]) => {
+                const users = await db<User>(tableName).whereIn(
+                    'stripeCustomerId',
+                    stripeCustomerIds
+                );
+
+                return stripeCustomerIds.map((stripeCustomerId) =>
+                    users.find(
+                        (user) => user.stripeCustomerId === stripeCustomerId
+                    )
+                );
+            }
+        ),
     };
 };

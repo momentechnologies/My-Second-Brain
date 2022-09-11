@@ -5,6 +5,7 @@ import router from './routes';
 import appConfig from './config/app';
 import endpointNotFoundHandler from './middlewares/endpointNotFoundHandler';
 import exceptionHandler from './middlewares/exceptionHandler';
+import { CustomRequest } from './types/CustomRequest';
 
 const app = express();
 app.enable('trust proxy');
@@ -27,6 +28,14 @@ app.use(function (req, res, next) {
         next();
     }
 });
+
+app.use(
+    express.json({
+        verify: (req: CustomRequest, res, buf) => {
+            req.rawBody = buf;
+        },
+    })
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

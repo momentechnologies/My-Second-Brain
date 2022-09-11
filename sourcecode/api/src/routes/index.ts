@@ -3,6 +3,7 @@ import graphqlRoutes from '../graphql';
 import addContextToRequest from '../middlewares/addContextToRequest';
 import addUserToRequest from '../middlewares/addUserToRequest';
 import file from './file';
+import stripe from './stripe';
 
 const { Router } = express;
 
@@ -11,6 +12,7 @@ const apiRouter = Router();
 
 apiRouter.use(graphqlRoutes);
 apiRouter.use(file);
+apiRouter.use(stripe);
 
 apiRouter.get('/', (req, res) => {
     res.json({

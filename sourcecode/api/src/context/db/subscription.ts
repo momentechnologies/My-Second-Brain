@@ -1,13 +1,15 @@
 import DataLoader from 'dataloader';
 import { repositoryHelpers } from '../../services/db';
 import { Knex } from 'knex';
+import { DefaultFields } from '../../services/db/repositoryHelpers';
 
 const tableName = 'subscriptions';
 
-type Subscription = {
+export type SubscriptionWithoutId = {
     userId: number;
     stripeSubscriptionId?: string;
     startsAt: Date;
+    cancelAt?: Date;
     status:
         | 'active'
         | 'past_due'
@@ -20,14 +22,15 @@ type Subscription = {
     nextRenewalAt: Date;
 };
 
+export interface Subscription extends DefaultFields, SubscriptionWithoutId {}
 const activeStatuses = ['active', 'trialing'];
 
 export default (db: Knex) => {
     return {
-        ...repositoryHelpers.setupDefaultRepository<Subscription>(
-            tableName,
-            db
-        ),
+        ...repositoryHelpers.setupDefaultRepository<
+            SubscriptionWithoutId,
+            Subscription
+        >(tableName, db),
         getActiveByUserId: new DataLoader(async (userIds: number[]) => {
             const subscriptions = await db<Subscription>(tableName)
                 .whereIn('userId', userIds)
@@ -39,5 +42,21 @@ export default (db: Knex) => {
                 )
             );
         }),
+        getByStripeSubscriptionId: new DataLoader(
+            async (stripeSubscriptionIds: string[]) => {
+                const subscriptions = await db<Subscription>(tableName).whereIn(
+                    'stripeSubscriptionId',
+                    stripeSubscriptionIds
+                );
+
+                return stripeSubscriptionIds.map((stripeSubscriptionId) =>
+                    subscriptions.find(
+                        (subscription) =>
+                            subscription.stripeSubscriptionId ===
+                            stripeSubscriptionId
+                    )
+                );
+            }
+        ),
     };
 };
