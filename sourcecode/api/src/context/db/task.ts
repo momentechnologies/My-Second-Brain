@@ -71,6 +71,7 @@ export default (db: Knex) => {
                 showIsDone: boolean | null;
                 list: boolean | null;
                 dueBefore: Date | null;
+                listSpecificDateDateBefore: Date | null;
             }
         ) => {
             const query = db(tableName)
@@ -93,6 +94,14 @@ export default (db: Knex) => {
 
             if (filters.dueBefore) {
                 query.where(`dueAt`, '<', filters.dueBefore);
+            }
+
+            if (filters.listSpecificDateDateBefore) {
+                query.where(
+                    `listSpecificDateDate`,
+                    '<',
+                    filters.listSpecificDateDateBefore
+                );
             }
 
             return query;

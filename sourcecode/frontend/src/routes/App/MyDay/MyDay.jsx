@@ -14,17 +14,22 @@ import {
     Tabs,
 } from '@mui/material';
 import TaskRow from './TaskRow';
-import { Calendar } from '../../../components/Calendar';
 import TaskEditModal from '../../../components/TaskEditModal';
 import { PageContent } from '../../../components/Page';
 import DefaultHookQuery from '../../../components/DefaultHookQuery';
+import DateSpecificTable from './DateSpecificTable';
+import DoNextTable from './DoNextTable';
+import DelegatedTable from './DelegatedTable';
+import SomedayTable from './SomedayTable';
 
 export const tabs = [
     {
-        name: 'Date tasks',
-        value: 'doNext',
+        name: 'Date specific',
+        value: 'specificDate',
         filters: {
-            dueBefore: DateFNS.endOfDay(DateFNS.addDays(new Date(), 5)),
+            listSpecificDateDateBefore: DateFNS.endOfDay(
+                DateFNS.addDays(new Date(), 7)
+            ),
         },
         order: (tasks) =>
             tasks.sort(
@@ -43,6 +48,13 @@ export const tabs = [
         value: 'delegated',
         filters: {
             list: 'delegated',
+        },
+    },
+    {
+        name: 'Some day',
+        value: 'someday',
+        filters: {
+            list: 'someday',
         },
     },
 ];
@@ -67,37 +79,51 @@ const MyDay = ({ queryHookData, selectedTab, setSelectedTab }) => {
                                 ))}
                             </Tabs>
                         </Box>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell variant="head">Task</TableCell>
-                                    <TableCell variant="head">
-                                        Project
-                                    </TableCell>
-                                    <TableCell variant="head">Due at</TableCell>
-                                    <TableCell />
-                                </TableRow>
-                            </TableHead>
-                            <DefaultHookQuery queryHookData={queryHookData}>
-                                {({ data, refetch }) => (
-                                    <TableBody>
-                                        {(tabInfo.order
-                                            ? tabInfo.order(data.tasks)
-                                            : data.tasks
-                                        ).map((task) => (
-                                            <TaskRow
-                                                key={task.id}
-                                                task={task}
-                                                startValueIsDone={task.isDone}
-                                                onClick={() =>
-                                                    setSelectedTaskToEdit(task)
+                        <DefaultHookQuery queryHookData={queryHookData}>
+                            {({ data, refetch }) => {
+                                const tasks = tabInfo.order
+                                    ? tabInfo.order(data.tasks)
+                                    : data.tasks;
+                                switch (tabInfo.value) {
+                                    case 'specificDate':
+                                        return (
+                                            <DateSpecificTable
+                                                setSelectedTaskToEdit={
+                                                    setSelectedTaskToEdit
                                                 }
+                                                tasks={tasks}
                                             />
-                                        ))}
-                                    </TableBody>
-                                )}
-                            </DefaultHookQuery>
-                        </Table>
+                                        );
+                                    case 'doNext':
+                                        return (
+                                            <DoNextTable
+                                                setSelectedTaskToEdit={
+                                                    setSelectedTaskToEdit
+                                                }
+                                                tasks={tasks}
+                                            />
+                                        );
+                                    case 'delegated':
+                                        return (
+                                            <DelegatedTable
+                                                setSelectedTaskToEdit={
+                                                    setSelectedTaskToEdit
+                                                }
+                                                tasks={tasks}
+                                            />
+                                        );
+                                    case 'someday':
+                                        return (
+                                            <SomedayTable
+                                                setSelectedTaskToEdit={
+                                                    setSelectedTaskToEdit
+                                                }
+                                                tasks={tasks}
+                                            />
+                                        );
+                                }
+                            }}
+                        </DefaultHookQuery>
                     </Paper>
                 </Grid>
             </Grid>

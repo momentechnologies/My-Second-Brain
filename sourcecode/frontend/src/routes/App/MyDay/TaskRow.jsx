@@ -32,14 +32,14 @@ const getDueString = (dueAt) => {
 };
 
 const useDueInfo = (task) => {
-    if (!task.dueAt) {
+    if (!task.listSpecificDateDate) {
         return {
             dueString: null,
             color: '',
         };
     }
 
-    const date = DateFNS.parseISO(task.dueAt);
+    const date = DateFNS.parseISO(task.listSpecificDateDate);
     const nowDate = new Date();
 
     return {

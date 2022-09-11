@@ -22,6 +22,7 @@ export const schema = gql`
         showIsDone: Boolean = false
         list: String
         dueBefore: DateTime
+        listSpecificDateDateBefore: DateTime
     }
 
     input CreateTaskInput {
@@ -161,6 +162,7 @@ export const resolvers = {
                 showIsDone: filters.showIsDone,
                 list: filters.list,
                 dueBefore: filters.dueBefore,
+                listSpecificDateDateBefore: filters.listSpecificDateDateBefore,
             });
         },
     },
