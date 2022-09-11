@@ -1,17 +1,31 @@
 import { repositoryHelpers } from '../../services/db';
 import DataLoader from 'dataloader';
+import { Knex } from 'knex';
 
 const tableName = 'tasks';
+
+export const taskLists = ['doNext', 'delegated', 'someday', 'specificDate'];
+
+export type TaskList =
+    | 'doNext'
+    | 'delegated'
+    | 'someday'
+    | 'specificDate'
+    | null;
 
 export type Task = {
     userId: number;
     projectId?: number;
     name: string;
+    list?: TaskList;
+    dueAt?: Date;
+    listSpecificDateDate?: Date;
+    remindMeAt?: Date;
     isDone: boolean;
     isArchived: boolean;
 };
 
-export default (db) => {
+export default (db: Knex) => {
     const getAllForProjectIdWithFiltersCache = {};
     return {
         ...repositoryHelpers.setupDefaultRepository<Task>(tableName, db),
@@ -30,7 +44,9 @@ export default (db) => {
                         );
 
                         if (filters.onlyUnassigned) {
-                            query.whereNull(`projectId`);
+                            query.where((query) =>
+                                query.whereNull(`projectId`).orWhereNull('list')
+                            );
                         }
 
                         if (!filters.showIsDone) {
@@ -53,7 +69,7 @@ export default (db) => {
             filters: {
                 onlyUnassigned: boolean | null;
                 showIsDone: boolean | null;
-                context: boolean | null;
+                list: boolean | null;
                 dueBefore: Date | null;
             }
         ) => {
@@ -63,7 +79,7 @@ export default (db) => {
 
             if (filters.onlyUnassigned) {
                 query.where((query) =>
-                    query.whereNull('projectId').orWhereNull('context')
+                    query.whereNull(`projectId`).orWhereNull('list')
                 );
             }
 
@@ -71,8 +87,8 @@ export default (db) => {
                 query.where(`isDone`, false);
             }
 
-            if (filters.context) {
-                query.where(`context`, filters.context);
+            if (filters.list) {
+                query.where(`list`, filters.list);
             }
 
             if (filters.dueBefore) {

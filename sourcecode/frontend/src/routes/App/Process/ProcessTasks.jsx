@@ -26,7 +26,9 @@ const getTasksToProcess = gql`
                 id
                 name
             }
-            context
+            list
+            listSpecificDateDate
+            remindMeAt
             dueAt
         }
     }

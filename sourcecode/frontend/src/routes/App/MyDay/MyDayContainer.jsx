@@ -1,7 +1,6 @@
 import React from 'react';
 import MyDay, { tabs } from './MyDay';
 import { gql, useQuery } from '@apollo/client';
-import DefaultHookQuery from '../../../components/DefaultHookQuery';
 
 const getProjectQuery = gql`
     query GetMyDay($filters: GetTasksFiltersInput) {
@@ -11,7 +10,9 @@ const getProjectQuery = gql`
             isDone
             createdAt
             dueAt
-            context
+            list
+            listSpecificDateDate
+            remindMeAt
             project {
                 id
                 name

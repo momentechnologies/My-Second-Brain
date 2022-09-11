@@ -1,8 +1,10 @@
 export const graphqlUpdateDataBuilder = async (
     data: { [key: string]: any },
-    parameters: { [key: string]: (any) => Promise<any> }
+    parameters: { [key: string]: (value: any) => Promise<any> }
 ) => {
-    const result = {};
+    const result: {
+        [key in keyof typeof parameters]: any;
+    } = {};
 
     for (let key of Object.keys(parameters)) {
         if (data[key] !== undefined) {

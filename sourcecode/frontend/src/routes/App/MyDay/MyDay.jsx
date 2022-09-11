@@ -35,14 +35,14 @@ export const tabs = [
         name: 'Do next',
         value: 'doNext',
         filters: {
-            context: 'doNext',
+            list: 'doNext',
         },
     },
     {
         name: 'Delegated',
         value: 'delegated',
         filters: {
-            context: 'delegated',
+            list: 'delegated',
         },
     },
 ];

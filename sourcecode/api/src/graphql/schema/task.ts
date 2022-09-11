@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
 import { Context } from '../../context';
 import validateJoi from '../../services/validateJoi';
-import Joi from 'joi';
 import NotFoundException from '../../exceptions/notFound';
 import { graphqlUpdateDataBuilder } from '../../services/db/graphqlUpdateDataBuilder';
+import * as TaskService from '../../services/task';
+import { setNulls } from '../../services/task';
 
 export const schema = gql`
     type Mutation {
@@ -19,37 +20,43 @@ export const schema = gql`
     input GetTasksFiltersInput {
         onlyUnassigned: Boolean = false
         showIsDone: Boolean = false
-        context: String
+        list: String
         dueBefore: DateTime
     }
 
     input CreateTaskInput {
         name: String!
         projectId: Int
-        context: String
+        list: String
         dueAt: DateTime
         isDone: Boolean
         isArchived: Boolean
+        listSpecificDateDate: DateTime
+        remindMeAt: DateTime
     }
 
     input UpdateTaskInput {
         name: String
         projectId: Int
-        context: String
+        list: String
         dueAt: DateTime
         isDone: Boolean
         isArchived: Boolean
+        listSpecificDateDate: DateTime
+        remindMeAt: DateTime
     }
 
     type Task {
         id: Int!
         projectId: Int
-        context: String
+        list: String
         dueAt: DateTime
         project: Project
         name: String!
         isDone: Boolean!
         isArchived: Boolean!
+        listSpecificDateDate: DateTime
+        remindMeAt: DateTime
         createdAt: DateTime!
         updatedAt: DateTime!
     }
@@ -61,13 +68,7 @@ export const resolvers = {
             const parsedData: {
                 name: string;
                 projectId?: number;
-            } = validateJoi(
-                data,
-                Joi.object().keys({
-                    name: Joi.string().min(1).required(),
-                    projectId: Joi.number().min(1).allow(null).optional(),
-                })
-            );
+            } = validateJoi(data, TaskService.getJoiValidation());
 
             const optionalDataToSet = await graphqlUpdateDataBuilder(
                 parsedData,
@@ -86,16 +87,21 @@ export const resolvers = {
 
                         return project.id;
                     },
+                    list: (value) => value,
+                    listSpecificDateDate: (value) => value,
+                    remindMeAt: (value) => value,
                 }
             );
 
-            return await context.db().task.create({
-                ...optionalDataToSet,
-                userId: context.user.id,
-                name: parsedData.name,
-                isDone: false,
-                isArchived: false,
-            });
+            return await context.db().task.create(
+                setNulls({
+                    ...optionalDataToSet,
+                    userId: context.user.id,
+                    name: parsedData.name,
+                    isDone: false,
+                    isArchived: false,
+                })
+            );
         },
         updateTask: async (_, { id, data }, context: Context) => {
             const task = await context.db().task.getById.load(id);
@@ -106,16 +112,7 @@ export const resolvers = {
 
             const parsedData = validateJoi(
                 data,
-                Joi.object().keys({
-                    name: Joi.string().min(1).optional(),
-                    isDone: Joi.boolean().optional(),
-                    projectId: Joi.number().min(1).allow(null).optional(),
-                    dueAt: Joi.date().allow(null).optional(),
-                    context: Joi.string()
-                        .valid('doNext', 'delegated', 'someday')
-                        .allow(null)
-                        .optional(),
-                })
+                TaskService.getJoiValidation(true)
             );
 
             const dataToUpdate = await graphqlUpdateDataBuilder(parsedData, {
@@ -133,13 +130,17 @@ export const resolvers = {
 
                     return project.id;
                 },
-                isDone: async (value) => value,
-                context: async (value) => value,
-                dueAt: async (value) => value,
                 name: async (value) => value,
+                isDone: async (value) => value,
+                list: async (value) => value,
+                dueAt: async (value) => value,
+                listSpecificDateDate: async (value) => value,
+                remindMeAt: async (value) => value,
             });
 
-            return await context.db().task.updateById(id, dataToUpdate);
+            return await context
+                .db()
+                .task.updateById(id, setNulls(dataToUpdate));
         },
         deleteTask: async (_, { taskId }, context: Context) => {
             const task = await context.db().task.getById.load(taskId);
@@ -158,7 +159,7 @@ export const resolvers = {
             return await context.db().task.get(context.user.id, {
                 onlyUnassigned: filters.onlyUnassigned,
                 showIsDone: filters.showIsDone,
-                context: filters.context,
+                list: filters.list,
                 dueBefore: filters.dueBefore,
             });
         },

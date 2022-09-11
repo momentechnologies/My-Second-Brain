@@ -14,6 +14,9 @@ const getProjectQuery = gql`
                 name
                 isDone
                 createdAt
+                list
+                listSpecificDateDate
+                remindMeAt
             }
         }
     }
