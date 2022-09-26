@@ -50,6 +50,12 @@ const ProcessTasks = () => {
                             <TableCell>
                                 <strong>Name</strong>
                             </TableCell>
+                            <TableCell>
+                                <strong>Project</strong>
+                            </TableCell>
+                            <TableCell>
+                                <strong>List</strong>
+                            </TableCell>
                             <TableCell width={40} />
                         </TableRow>
                     </TableHead>

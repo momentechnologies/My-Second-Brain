@@ -1,28 +1,7 @@
 import React from 'react';
-import {
-    Autocomplete,
-    IconButton,
-    MenuItem,
-    Select,
-    TableCell,
-    TableRow,
-    TextField,
-} from '@mui/material';
-import ProjectPicker from '../../../components/ProjectPicker';
+import { IconButton, TableCell, TableRow } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { gql, useMutation } from '@apollo/client';
-
-const UPDATE_TASK = gql`
-    mutation UpdateTask($id: Int!, $data: UpdateTaskInput!) {
-        updateTask(id: $id, data: $data) {
-            id
-            isDone
-            projectId
-            context
-            dueAt
-        }
-    }
-`;
 
 const DELETE_TASK = gql`
     mutation DeleteTask($taskId: Int!) {
@@ -36,6 +15,8 @@ const TaskRow = ({ task, onDeleted, onClick }) => {
     return (
         <TableRow hover onClick={onClick}>
             <TableCell>{task.name}</TableCell>
+            <TableCell>{task.project && task.project.name}</TableCell>
+            <TableCell>{task.list}</TableCell>
             <TableCell>
                 <IconButton
                     color="error"
