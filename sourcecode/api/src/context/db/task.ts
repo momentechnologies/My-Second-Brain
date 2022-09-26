@@ -76,7 +76,8 @@ export default (db: Knex) => {
         ) => {
             const query = db(tableName)
                 .select(`${tableName}.*`)
-                .where('userId', userId);
+                .where('userId', userId)
+                .orderBy('createdAt', 'desc');
 
             if (filters.onlyUnassigned) {
                 query.where((query) =>

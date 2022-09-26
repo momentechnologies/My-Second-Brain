@@ -1,19 +1,6 @@
 import React from 'react';
 import * as DateFNS from 'date-fns';
-import {
-    Box,
-    Container,
-    Grid,
-    Paper,
-    Tab,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Tabs,
-} from '@mui/material';
-import TaskRow from './TaskRow';
+import { Box, Grid, Paper, Tab, Tabs } from '@mui/material';
 import TaskEditModal from '../../../components/TaskEditModal';
 import { PageContent } from '../../../components/Page';
 import DefaultHookQuery from '../../../components/DefaultHookQuery';
