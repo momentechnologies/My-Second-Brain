@@ -9,49 +9,75 @@ import {
 import { Link } from 'react-router-dom';
 import MyAccountButton from './MyAccountButton';
 import { LogoWhite } from '../CustomIcons';
+import { useMatch } from 'react-router-dom';
 
-const _links = (iconSize = 'medium', color = 'primary.contrastText') => [
+const MenuIcon = ({ path, Icon, selectedColor, color, iconSize }) => {
+    const match = useMatch({
+        path: path,
+        strict: true,
+        sensitive: true,
+    });
+
+    return (
+        <Icon
+            fontSize={iconSize}
+            sx={{
+                color: !!match ? selectedColor : color,
+            }}
+        ></Icon>
+    );
+};
+
+const _links = (
+    iconSize = 'medium',
+    color = 'primary.contrastText',
+    selectedColor = 'tertiary.main'
+) => [
     {
         to: '/app',
         icon: (
-            <InboxIcon
-                fontSize={iconSize}
-                sx={{
-                    color,
-                }}
+            <MenuIcon
+                path={'/app'}
+                Icon={TodayIcon}
+                color={color}
+                selectedColor={selectedColor}
+                iconSize={iconSize}
             />
         ),
     },
     {
-        to: '/app/my-day',
+        to: '/app/process',
         icon: (
-            <TodayIcon
-                fontSize={iconSize}
-                sx={{
-                    color,
-                }}
+            <MenuIcon
+                path={'/app/process'}
+                Icon={InboxIcon}
+                color={color}
+                selectedColor={selectedColor}
+                iconSize={iconSize}
             />
         ),
     },
     {
         to: '/app/projects',
         icon: (
-            <AddTaskIcon
-                fontSize={iconSize}
-                sx={{
-                    color,
-                }}
+            <MenuIcon
+                path={'/app/projects'}
+                Icon={AddTaskIcon}
+                color={color}
+                selectedColor={selectedColor}
+                iconSize={iconSize}
             />
         ),
     },
     {
         to: '/app/nodes',
         icon: (
-            <FolderIcon
-                fontSize={iconSize}
-                sx={{
-                    color,
-                }}
+            <MenuIcon
+                path={'/app/nodes'}
+                Icon={FolderIcon}
+                color={color}
+                selectedColor={selectedColor}
+                iconSize={iconSize}
             />
         ),
     },

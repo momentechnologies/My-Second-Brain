@@ -17,7 +17,7 @@ const Index = () => {
     const routes = useRoutes([
         {
             path: '/',
-            element: <Process />,
+            element: <MyDay />,
         },
         {
             path: '/projects',
@@ -52,8 +52,8 @@ const Index = () => {
             element: <Node />,
         },
         {
-            path: '/my-day',
-            element: <MyDay />,
+            path: '/process',
+            element: <Process />,
         },
         {
             path: '*',

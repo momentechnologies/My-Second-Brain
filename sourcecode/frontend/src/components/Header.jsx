@@ -8,6 +8,7 @@ import {
     ListItem,
     ListItemButton,
     ListItemText,
+    Stack,
     Toolbar,
     Typography,
 } from '@mui/material';
@@ -17,21 +18,6 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 const Header = () => {
     const navigate = useNavigate();
     const [menuIsOpen, setMenuIsOpen] = React.useState(false);
-
-    const links = [
-        {
-            label: 'Projects',
-            path: '/app/projects',
-        },
-        {
-            label: 'Process',
-            path: '/app/process',
-        },
-        {
-            label: 'Nodes',
-            path: '/app/nodes',
-        },
-    ];
 
     return (
         <AppBar position="static" color="transparent">
@@ -67,6 +53,13 @@ const Header = () => {
                         sx={{ my: 2, display: 'block' }}
                     >
                         Start free 14 days trial
+                    </Button>
+                    <Button
+                        variant={'text'}
+                        onClick={() => navigate('/auth/login')}
+                        sx={{ my: 2, ml: 2, display: 'block' }}
+                    >
+                        Login
                     </Button>
                 </Box>
             </Toolbar>
